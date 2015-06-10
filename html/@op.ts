@@ -46,7 +46,6 @@ module op{
 	
 	export const setter = function(ID: string){
 		return function(val){
-			console.log('setting ' + ID);
 			let lu = this['__@op'];
 			if(!lu){
 				lu = [];
@@ -65,7 +64,6 @@ module op{
 	
 	export function toProp(){
 		return (classPrototype: Function, fieldName: string) =>{
-			console.log('in toProp');
 			
 			//from http://blog.wolksoftware.com/decorators-metadata-reflection-in-typescript-from-novice-to-expert-part-ii
 			if (delete this[fieldName]) {
@@ -180,7 +178,12 @@ module op{
 					if(!returnType.properties) returnType.properties = [];
 					const propInfo = <IPropertyInfo> memberInfo;
 					returnType.properties.push(propInfo);
-					
+					if(recursive){
+						const propertyType = Reflect.getMetadata('design:type', classPrototype, memberKey);
+						if(propertyType){
+							propInfo.propertyType = reflectPrototype(propertyType, recursive);
+						}
+					}
 					
 					//#endregion
 				}

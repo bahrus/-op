@@ -42,7 +42,6 @@ var op;
     };
     op.setter = function (ID) {
         return function (val) {
-            console.log('setting ' + ID);
             var lu = this['__@op'];
             if (!lu) {
                 lu = [];
@@ -61,7 +60,6 @@ var op;
     function toProp() {
         var _this = this;
         return function (classPrototype, fieldName) {
-            console.log('in toProp');
             //from http://blog.wolksoftware.com/decorators-metadata-reflection-in-typescript-from-novice-to-expert-part-ii
             if (delete _this[fieldName]) {
                 // Create new property with getter and setter
@@ -149,6 +147,12 @@ var op;
                         returnType.properties = [];
                     var propInfo = memberInfo;
                     returnType.properties.push(propInfo);
+                    if (recursive) {
+                        var propertyType = Reflect.getMetadata('design:type', classPrototype, memberKey);
+                        if (propertyType) {
+                            propInfo.propertyType = reflectPrototype(propertyType, recursive);
+                        }
+                    }
                 }
             }
         }

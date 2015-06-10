@@ -46,7 +46,6 @@ var Examples;
             return employeeImpl;
         };
         Object.defineProperty(Employee.prototype, "Surname", {
-            //public static Surname = 'Surname';
             get: function () { return null; },
             set: function (v) { },
             enumerable: true,
@@ -64,7 +63,6 @@ var Examples;
         });
         Employee.prototype.DriveHome = function () {
         };
-        Employee.HomeAddress = 'HomeAddress';
         Object.defineProperty(Employee.prototype, "Surname",
             __decorate([
                 op.initProp, 
@@ -80,14 +78,14 @@ var Examples;
             __metadata('design:type', String)
         ], Employee.prototype, "MiddleName");
         __decorate([
-            op.toProp, 
+            op.toProp(), 
             __metadata('design:type', Address)
         ], Employee.prototype, "HomeAddress");
         return Employee;
     })();
     Examples.Employee = Employee;
     console.log('reflect Employee => ');
-    console.log(op.reflect(Employee));
+    console.log(op.reflect(Employee, true));
     var ColumnDef = 'ColumnDef';
     var Constraints = 'Constraints';
     var setTitleToFieldNameUC = function (fieldName) {

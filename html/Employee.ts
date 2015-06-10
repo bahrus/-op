@@ -41,7 +41,6 @@ module Examples{
 			return employeeImpl;
 		}
 		
-		//public static Surname = 'Surname';
 		@op.initProp
 		public get Surname() : string{return null;} 
 		public set Surname(v: string){}
@@ -55,7 +54,6 @@ module Examples{
 			this._firstName = val;
 		}
 		
-		//public static MiddleName = 'MiddleName';
 		@op.toProp()
 		@op.plopIntoMeta<IColumnDefCategory>({
 			ColumnDef: {
@@ -64,8 +62,7 @@ module Examples{
 		})
 		public MiddleName : string;
 		
-		public static HomeAddress = 'HomeAddress';
-		@op.toProp
+		@op.toProp()
 		public HomeAddress : Address;
 		
 		public DriveHome() : void {
@@ -74,7 +71,7 @@ module Examples{
 	}
 	
 	console.log('reflect Employee => ');
-	console.log(op.reflect(Employee));
+	console.log(op.reflect(Employee, true));
 	
 	const ColumnDef = 'ColumnDef';
 	interface IColumnDef{
