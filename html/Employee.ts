@@ -102,6 +102,15 @@ module Examples{
 		}
 	}
 	
+	class AddressView extends Address implements IAddressStruct{
+		@op.plopIntoMeta<IConstraintCategory>({
+			Constraints:{
+				maxLength: 200
+			}
+		})
+		public street: string;
+	}
+	
 	class EmployeeView extends Employee implements IEmployeeStruct{
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
@@ -122,6 +131,10 @@ module Examples{
 			}
 		})
 		Surname: string;
+		
+		@op.toProp()
+		HomeAddress: AddressView;
+		
 	}
 	
 	console.log('reflect on EmployeeView =>');

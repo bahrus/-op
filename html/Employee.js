@@ -95,6 +95,21 @@ var Examples;
             }
         };
     };
+    var AddressView = (function (_super) {
+        __extends(AddressView, _super);
+        function AddressView() {
+            _super.apply(this, arguments);
+        }
+        __decorate([
+            op.plopIntoMeta({
+                Constraints: {
+                    maxLength: 200
+                }
+            }), 
+            __metadata('design:type', String)
+        ], AddressView.prototype, "street");
+        return AddressView;
+    })(Address);
     var EmployeeView = (function (_super) {
         __extends(EmployeeView, _super);
         function EmployeeView() {
@@ -122,6 +137,10 @@ var Examples;
             }), 
             __metadata('design:type', String)
         ], EmployeeView.prototype, "Surname");
+        __decorate([
+            op.toProp(), 
+            __metadata('design:type', AddressView)
+        ], EmployeeView.prototype, "HomeAddress");
         return EmployeeView;
     })(Employee);
     console.log('reflect on EmployeeView =>');
