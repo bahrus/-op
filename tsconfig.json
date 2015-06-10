@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"target": "ES5",
+		"module": "commonjs",
+		"sourceMap": true
+	},
+	"files": [
+    	"html/@op.ts", "html/Employee.ts"
+  	]
+}
