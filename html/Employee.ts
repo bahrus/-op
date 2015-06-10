@@ -17,11 +17,11 @@ module Examples{
 		}
 		
 		//public static Street = 'Street';
-		@op.toProp
+		@op.toProp()
 		public Street : string;
 		
 		//public static ZipCode = 'ZipCode';
-		@op.toProp
+		@op.toProp()
 		public ZipCode : string;
 	}
 	

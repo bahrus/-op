@@ -150,7 +150,7 @@ var op;
                     if (recursive) {
                         var propertyType = Reflect.getMetadata('design:type', classPrototype, memberKey);
                         if (propertyType) {
-                            propInfo.propertyType = reflectPrototype(propertyType, recursive);
+                            propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
                         }
                     }
                 }

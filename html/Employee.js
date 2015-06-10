@@ -28,11 +28,11 @@ var Examples;
             return addressImpl;
         };
         __decorate([
-            op.toProp, 
+            op.toProp(), 
             __metadata('design:type', String)
         ], Address.prototype, "Street");
         __decorate([
-            op.toProp, 
+            op.toProp(), 
             __metadata('design:type', String)
         ], Address.prototype, "ZipCode");
         return Address;
