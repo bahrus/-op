@@ -103,6 +103,7 @@ module Examples{
 	}
 	
 	class AddressView extends Address implements IAddressStruct{
+		@op.toProp()
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
 				maxLength: 200

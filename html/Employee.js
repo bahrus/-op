@@ -101,6 +101,7 @@ var Examples;
             _super.apply(this, arguments);
         }
         __decorate([
+            op.toProp(),
             op.plopIntoMeta({
                 Constraints: {
                     maxLength: 200
