@@ -145,7 +145,7 @@ var Examples;
         return EmployeeView;
     })(Employee);
     console.log('reflect on EmployeeView =>');
-    console.log(op.reflect(EmployeeView));
+    console.log(op.reflect(EmployeeView, true));
     var ev = new EmployeeView();
     ev.MiddleName = 'myMiddleName';
     //const evPropIDLookup = Reflect.getMetadata(op.tsp_propIDLookup, ev);
