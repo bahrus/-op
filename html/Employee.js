@@ -46,7 +46,6 @@ var Examples;
             return employeeImpl;
         };
         Object.defineProperty(Employee.prototype, "Surname", {
-            //@op.initProp
             get: function () { return null; },
             set: function (v) { },
             enumerable: true,
@@ -64,6 +63,11 @@ var Examples;
         });
         Employee.prototype.DriveHome = function () {
         };
+        Object.defineProperty(Employee.prototype, "Surname",
+            __decorate([
+                op.initProp, 
+                __metadata('design:type', String)
+            ], Employee.prototype, "Surname", Object.getOwnPropertyDescriptor(Employee.prototype, "Surname")));
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {

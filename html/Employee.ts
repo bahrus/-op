@@ -41,7 +41,7 @@ module Examples{
 			return employeeImpl;
 		}
 		
-		//@op.initProp
+		@op.initProp
 		public get Surname() : string{return null;} 
 		public set Surname(v: string){}
 		
