@@ -95,7 +95,7 @@ module op{
 		}
 	}
 	
-	export function plopperIntoMeta<T>(fn: (fieldName: string) => T){
+	export function metaPlopper<T>(fn: (fieldName: string) => T){
 		return (classPrototype: Function, fieldName: string) =>{
 			const data = fn(fieldName);
 			plopIntoPropMeta(data, classPrototype, fieldName);

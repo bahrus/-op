@@ -125,7 +125,7 @@ var Examples;
                     width: 200,
                 }
             }),
-            op.plopperIntoMeta(setTitleToFieldNameUC), 
+            op.metaPlopper(setTitleToFieldNameUC), 
             __metadata('design:type', String)
         ], EmployeeView.prototype, "MiddleName");
         __decorate([

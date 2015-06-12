@@ -123,7 +123,7 @@ module Examples{
 				width: 200,
 			}
 		})
-		@op.plopperIntoMeta<IColumnDefCategory>(setTitleToFieldNameUC)
+		@op.metaPlopper<IColumnDefCategory>(setTitleToFieldNameUC)
 		MiddleName: string;
 		
 		@op.plopIntoMeta<IColumnDefCategory>({
