@@ -65,6 +65,11 @@ module Examples{
 		@op.toProp()
 		public HomeAddress : Address;
 		
+		@op.plopIntoMeta<IColumnDefCategory>({
+			ColumnDef: {
+				hide: true,
+			}
+		})
 		public DriveHome() : void {
 			
 		}

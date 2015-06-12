@@ -80,6 +80,17 @@ var Examples;
             op.toProp(), 
             __metadata('design:type', Address)
         ], Employee.prototype, "HomeAddress");
+        Object.defineProperty(Employee.prototype, "DriveHome",
+            __decorate([
+                op.plopIntoMeta({
+                    ColumnDef: {
+                        hide: true,
+                    }
+                }), 
+                __metadata('design:type', Function), 
+                __metadata('design:paramtypes', []), 
+                __metadata('design:returntype', void 0)
+            ], Employee.prototype, "DriveHome", Object.getOwnPropertyDescriptor(Employee.prototype, "DriveHome")));
         return Employee;
     })();
     Examples.Employee = Employee;
