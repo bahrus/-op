@@ -41,7 +41,7 @@ module Examples{
 			return employeeImpl;
 		}
 		
-		@op.initProp
+		//@op.initProp
 		public get Surname() : string{return null;} 
 		public set Surname(v: string){}
 		
@@ -54,7 +54,7 @@ module Examples{
 			this._firstName = val;
 		}
 		
-		@op.toProp()
+		//@op.toProp()
 		@op.plopIntoMeta<IColumnDefCategory>({
 			ColumnDef: {
 				hide: true,
@@ -103,7 +103,7 @@ module Examples{
 	}
 	
 	class AddressView extends Address implements IAddressStruct{
-		@op.toProp()
+		//@op.toProp()
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
 				maxLength: 200

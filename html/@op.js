@@ -73,16 +73,20 @@ var op;
         };
     }
     op.toProp = toProp;
-    function plopIntoPropMeta(propVal, targetPrototype, propName) {
-        for (var propValKey in propVal) {
-            var category = propValKey;
+    function plopIntoPropMeta(data, classPrototype, propName) {
+        var propertyDescriptor = getPropertyDescriptor(classPrototype, propName);
+        if (!propertyDescriptor) {
+            toProp()(classPrototype, propName);
+        }
+        for (var category in data) {
+            //const category = propValKey;
             //TODO:  merge
-            var newCategoryObj = propVal[category];
-            var prevCategoryObj = Reflect.getMetadata(category, targetPrototype, propName);
+            var newCategoryObj = data[category];
+            var prevCategoryObj = Reflect.getMetadata(category, classPrototype, propName);
             if (prevCategoryObj) {
                 Object['assign'](newCategoryObj, prevCategoryObj);
             }
-            Reflect.defineMetadata(category, newCategoryObj, targetPrototype, propName);
+            Reflect.defineMetadata(category, newCategoryObj, classPrototype, propName);
         }
     }
     function plopperIntoMeta(fn) {

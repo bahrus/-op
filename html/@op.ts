@@ -78,16 +78,20 @@ module op{
 		}
 	}
 	
-	function plopIntoPropMeta(propVal: any, targetPrototype: any, propName: string){
-		for(const propValKey in propVal){
-			const category = propValKey;
+	function plopIntoPropMeta(data: any, classPrototype: any, propName: string){
+		const propertyDescriptor = getPropertyDescriptor(classPrototype, propName);
+		if(!propertyDescriptor){
+			toProp()(classPrototype, propName);
+		}
+		for(const category in data){
+			//const category = propValKey;
 			//TODO:  merge
-			const newCategoryObj = propVal[category];
-			const prevCategoryObj = Reflect.getMetadata(category, targetPrototype, propName);
+			const newCategoryObj = data[category];
+			const prevCategoryObj = Reflect.getMetadata(category, classPrototype, propName);
 			if(prevCategoryObj){
 				Object['assign'](newCategoryObj, prevCategoryObj);
 			}
-			Reflect.defineMetadata(category, newCategoryObj, targetPrototype, propName);
+			Reflect.defineMetadata(category, newCategoryObj, classPrototype, propName);
 		}
 	}
 	
