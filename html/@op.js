@@ -104,7 +104,9 @@ var op;
     op.plopIntoMeta = plopIntoMeta;
     function reflect(classRef, recursive) {
         var classPrototype = classRef.prototype;
-        return reflectPrototype(classPrototype, recursive);
+        var returnType = reflectPrototype(classPrototype, recursive);
+        addMemberInfo(returnType, classRef, false, true);
+        return returnType;
     }
     op.reflect = reflect;
     function getPropertyDescriptor(classPrototype, memberKey) {
@@ -116,43 +118,51 @@ var op;
         }
         return null;
     }
-    function reflectPrototype(classPrototype, recursive) {
-        var name = classPrototype.constructor.toString().substring(9);
-        var iPosOfOpenParen = name.indexOf('(');
-        name = name.substr(0, iPosOfOpenParen);
-        var returnType = {
-            name: name
-        };
-        for (var memberKey in classPrototype) {
-            var propertyDescriptor = getPropertyDescriptor(classPrototype, memberKey);
+    function addMemberInfo(returnType, classRefOrClassPrototype, isPrototype, recursive) {
+        for (var memberKey in classRefOrClassPrototype) {
+            var propertyDescriptor = getPropertyDescriptor(classRefOrClassPrototype, memberKey);
             if (propertyDescriptor) {
                 var memberInfo = {
                     name: memberKey,
                     propertyDescriptor: propertyDescriptor,
                 };
-                var metaDataKeys = Reflect.getMetadataKeys(classPrototype, memberKey);
+                var metaDataKeys = Reflect.getMetadataKeys(classRefOrClassPrototype, memberKey);
                 for (var i = 0, n = metaDataKeys.length; i < n; i++) {
                     var metaKey = metaDataKeys[i];
                     if (!memberInfo.metadata)
                         memberInfo.metadata = {};
                     //debugger;
-                    memberInfo.metadata[metaKey] = Reflect.getMetadata(metaKey, classPrototype, memberKey);
+                    memberInfo.metadata[metaKey] = Reflect.getMetadata(metaKey, classRefOrClassPrototype, memberKey);
                 }
                 if (propertyDescriptor.value) {
                     //#region method
-                    if (!returnType.methods)
-                        returnType.methods = [];
                     var methodInfo = memberInfo;
-                    returnType.methods.push(methodInfo);
+                    if (isPrototype) {
+                        if (!returnType.methods)
+                            returnType.methods = [];
+                        returnType.methods.push(methodInfo);
+                    }
+                    else {
+                        if (!returnType.staticMethods)
+                            returnType.staticMethods = [];
+                        returnType.staticMethods.push(methodInfo);
+                    }
                 }
                 else if (propertyDescriptor.get || propertyDescriptor.set) {
                     //#region property
-                    if (!returnType.properties)
-                        returnType.properties = [];
                     var propInfo = memberInfo;
-                    returnType.properties.push(propInfo);
+                    if (isPrototype) {
+                        if (!returnType.properties)
+                            returnType.properties = [];
+                        returnType.properties.push(propInfo);
+                    }
+                    else {
+                        if (!returnType.staticProperties)
+                            returnType.staticProperties = [];
+                        returnType.staticProperties.push(propInfo);
+                    }
                     if (recursive) {
-                        var propertyType = Reflect.getMetadata('design:type', classPrototype, memberKey);
+                        var propertyType = Reflect.getMetadata('design:type', classRefOrClassPrototype, memberKey);
                         if (propertyType) {
                             propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
                         }
@@ -160,6 +170,15 @@ var op;
                 }
             }
         }
+    }
+    function reflectPrototype(classPrototype, recursive) {
+        var name = classPrototype.constructor.toString().substring(9);
+        var iPosOfOpenParen = name.indexOf('(');
+        name = name.substr(0, iPosOfOpenParen);
+        var returnType = {
+            name: name
+        };
+        addMemberInfo(returnType, classPrototype, true, recursive);
         return returnType;
     }
     // export function initializer(classInitFn: Function){

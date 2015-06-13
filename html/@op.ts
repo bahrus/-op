@@ -117,8 +117,8 @@ module op{
 	export interface IType extends IReflectionEntity{
 		properties?: IPropertyInfo[];
 		methods?: IMethodInfo[];
-		//type?: Function;
-		//inheritedType?: IType;
+		staticProperties?: IPropertyInfo[];
+		staticMethods?: IMethodInfo[];
 	}
 	
 	export interface IMemberInfo extends IReflectionEntity{
@@ -137,7 +137,10 @@ module op{
 	
 	export function reflect(classRef : Function, recursive?: boolean){
 		const classPrototype = classRef.prototype;
-		return reflectPrototype(classPrototype, recursive);
+		
+		const returnType = reflectPrototype(classPrototype, recursive);
+		addMemberInfo(returnType, classRef, false, true);
+		return returnType;
 	}
 	
 	function getPropertyDescriptor(classPrototype: any, memberKey: string){
@@ -150,40 +153,45 @@ module op{
 		
 	}
 	
-	function reflectPrototype(classPrototype: any, recursive?: boolean){
-		let name : string = classPrototype.constructor.toString().substring(9);
-		const iPosOfOpenParen = name.indexOf('(');
-		name = name.substr(0, iPosOfOpenParen);
-		const returnType : IType = {
-			name: name
-		}
-		for(const memberKey in classPrototype){
-			const propertyDescriptor = getPropertyDescriptor(classPrototype, memberKey);
+	function addMemberInfo(returnType: IType, classRefOrClassPrototype: any, isPrototype: boolean, recursive?: boolean){
+		for(const memberKey in classRefOrClassPrototype){
+			const propertyDescriptor = getPropertyDescriptor(classRefOrClassPrototype, memberKey);
 			if(propertyDescriptor){
 				const memberInfo : IMemberInfo = {
 					name: memberKey,
 					propertyDescriptor : propertyDescriptor,
 				};
-				const metaDataKeys = Reflect.getMetadataKeys(classPrototype, memberKey);
+				const metaDataKeys = Reflect.getMetadataKeys(classRefOrClassPrototype, memberKey);
 				for(let i = 0, n = metaDataKeys.length; i < n; i++){
 					const metaKey = metaDataKeys[i];
 					if(!memberInfo.metadata) memberInfo.metadata = {};
 					//debugger;
-					memberInfo.metadata[metaKey] = Reflect.getMetadata(metaKey, classPrototype, memberKey);
+					memberInfo.metadata[metaKey] = Reflect.getMetadata(metaKey, classRefOrClassPrototype, memberKey);
 				}
 				if(propertyDescriptor.value){
 					//#region method
-					if(!returnType.methods) returnType.methods = [];
 					const methodInfo = <IMethodInfo> memberInfo;
-					returnType.methods.push(methodInfo);
+					if(isPrototype){
+						if(!returnType.methods) returnType.methods = [];
+						returnType.methods.push(methodInfo);
+					}else{
+						if(!returnType.staticMethods) returnType.staticMethods = [];
+						returnType.staticMethods.push(methodInfo);
+					}
+					
 					//#endregion
 				}else if(propertyDescriptor.get || propertyDescriptor.set){
 					//#region property
-					if(!returnType.properties) returnType.properties = [];
 					const propInfo = <IPropertyInfo> memberInfo;
-					returnType.properties.push(propInfo);
+					if(isPrototype){
+						if(!returnType.properties) returnType.properties = [];
+						returnType.properties.push(propInfo);
+					}else{
+						if(!returnType.staticProperties) returnType.staticProperties = [];
+						returnType.staticProperties.push(propInfo);
+					}
 					if(recursive){
-						const propertyType = Reflect.getMetadata('design:type', classPrototype, memberKey);
+						const propertyType = Reflect.getMetadata('design:type', classRefOrClassPrototype, memberKey);
 						if(propertyType){
 							propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
 						}
@@ -194,6 +202,16 @@ module op{
 			}
 			
 		}
+	}
+	
+	function reflectPrototype(classPrototype: any, recursive?: boolean){
+		let name : string = classPrototype.constructor.toString().substring(9);
+		const iPosOfOpenParen = name.indexOf('(');
+		name = name.substr(0, iPosOfOpenParen);
+		const returnType : IType = {
+			name: name
+		}
+		addMemberInfo(returnType, classPrototype, true, recursive);
 		return returnType;
 	}
 	

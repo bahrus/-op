@@ -37,12 +37,6 @@ var Examples;
         function Employee() {
         }
         Object.defineProperty(Employee.prototype, "Surname", {
-            // public static New(employee: IEmployee){
-            // 	// const employeeImpl = new Employee();
-            // 	// Object['assign'](employeeImpl, employee);
-            // 	// return employeeImpl;
-            // 	return op.createNew<IEmployee, Employee>(employee, Employee);
-            // }
             get: function () { return null; },
             set: function (v) { },
             enumerable: true,
@@ -92,6 +86,10 @@ var Examples;
             op.reflectionType(Address), 
             __metadata('design:type', Object)
         ], Employee.prototype, "TempAddress");
+        __decorate([
+            op.toProp(), 
+            __metadata('design:type', Address)
+        ], Employee, "defaultAddress");
         return Employee;
     })();
     Examples.Employee = Employee;
