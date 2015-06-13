@@ -8,6 +8,7 @@ module Examples{
 		ZipCode?: string;
 	}
 	
+	@op.initializer(Address.New2)
 	class Address implements IAddressStruct{
 		
 		public static New(address: IAddressStruct){
@@ -15,6 +16,9 @@ module Examples{
 			Object['assign'](addressImpl, address);
 			return addressImpl;
 		}
+		
+		
+		public static New2 : (address: IAddressStruct) => Address;
 		
 		//public static Street = 'Street';
 		@op.toProp()
@@ -41,7 +45,7 @@ module Examples{
 			return employeeImpl;
 		}
 		
-		@op.initProp
+		@op.initProp()
 		public get Surname() : string{return null;} 
 		public set Surname(v: string){}
 		
@@ -73,6 +77,9 @@ module Examples{
 		public DriveHome() : void {
 			
 		}
+		
+		@op.reflectionType(Address)
+		public TempAddress: IAddressStruct;
 	}
 	
 	console.log('reflect Employee => ');

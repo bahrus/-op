@@ -196,6 +196,21 @@ module op{
 		}
 		return returnType;
 	}
-
+	
+	export function initializer(classInitFn: Function){
+		return function(target: Function){
+			//debugger;
+		}
+	}
+	
+	export function reflectionType(typealias: Function){
+		return (classPrototype: Function, fieldName: string) =>{
+			const propertyDescriptor = getPropertyDescriptor(classPrototype, fieldName);
+			if(!propertyDescriptor){
+				toProp()(classPrototype, fieldName);
+			}
+			Reflect.defineMetadata('design:type', typealias, classPrototype, fieldName);
+		}
+	}
 	
 }

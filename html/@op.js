@@ -162,5 +162,21 @@ var op;
         }
         return returnType;
     }
+    function initializer(classInitFn) {
+        return function (target) {
+            //debugger;
+        };
+    }
+    op.initializer = initializer;
+    function reflectionType(typealias) {
+        return function (classPrototype, fieldName) {
+            var propertyDescriptor = getPropertyDescriptor(classPrototype, fieldName);
+            if (!propertyDescriptor) {
+                toProp()(classPrototype, fieldName);
+            }
+            Reflect.defineMetadata('design:type', typealias, classPrototype, fieldName);
+        };
+    }
+    op.reflectionType = reflectionType;
 })(op || (op = {}));
 //# sourceMappingURL=@op.js.map

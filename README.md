@@ -9,4 +9,6 @@ metadata associated with the members.
 * An efficient way of attaching metadata to fields declaratively,
 in a typesafe manner.  Doing so turns the fields into properties (for the benefit of 
 reflection).  This mechanism merges metadata defined in base classes with the sub classes.
+* A mechanism to write an inittializer for interface based class
+* A way to specify metadata for properties based on interface -- uses psuedoType specifier
 

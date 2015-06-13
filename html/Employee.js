@@ -35,6 +35,10 @@ var Examples;
             op.toProp(), 
             __metadata('design:type', String)
         ], Address.prototype, "ZipCode");
+        Address = __decorate([
+            op.initializer(Address.New2), 
+            __metadata('design:paramtypes', [])
+        ], Address);
         return Address;
     })();
     var Employee = (function () {
@@ -65,7 +69,7 @@ var Examples;
         };
         Object.defineProperty(Employee.prototype, "Surname",
             __decorate([
-                op.initProp, 
+                op.initProp(), 
                 __metadata('design:type', String)
             ], Employee.prototype, "Surname", Object.getOwnPropertyDescriptor(Employee.prototype, "Surname")));
         __decorate([
@@ -91,6 +95,10 @@ var Examples;
                 __metadata('design:paramtypes', []), 
                 __metadata('design:returntype', void 0)
             ], Employee.prototype, "DriveHome", Object.getOwnPropertyDescriptor(Employee.prototype, "DriveHome")));
+        __decorate([
+            op.reflectionType(Address), 
+            __metadata('design:type', Object)
+        ], Employee.prototype, "TempAddress");
         return Employee;
     })();
     Examples.Employee = Employee;
