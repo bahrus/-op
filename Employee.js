@@ -87,7 +87,11 @@ var Examples;
             __metadata('design:type', Object)
         ], Employee.prototype, "TempAddress");
         __decorate([
-            op.toProp(), 
+            op.plopIntoMeta({
+                ColumnDef: {
+                    hide: true,
+                }
+            }), 
             __metadata('design:type', Address)
         ], Employee, "defaultAddress");
         return Employee;
