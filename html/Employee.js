@@ -19,14 +19,10 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
 };
 var Examples;
 (function (Examples) {
+    //@op.initializer(Address.New2)
     var Address = (function () {
         function Address() {
         }
-        Address.New = function (address) {
-            var addressImpl = new Address();
-            Object['assign'](addressImpl, address);
-            return addressImpl;
-        };
         __decorate([
             op.toProp(), 
             __metadata('design:type', String)
@@ -35,21 +31,18 @@ var Examples;
             op.toProp(), 
             __metadata('design:type', String)
         ], Address.prototype, "ZipCode");
-        Address = __decorate([
-            op.initializer(Address.New2), 
-            __metadata('design:paramtypes', [])
-        ], Address);
         return Address;
     })();
     var Employee = (function () {
         function Employee() {
         }
-        Employee.New = function (employee) {
-            var employeeImpl = new Employee();
-            Object['assign'](employeeImpl, employee);
-            return employeeImpl;
-        };
         Object.defineProperty(Employee.prototype, "Surname", {
+            // public static New(employee: IEmployee){
+            // 	// const employeeImpl = new Employee();
+            // 	// Object['assign'](employeeImpl, employee);
+            // 	// return employeeImpl;
+            // 	return op.createNew<IEmployee, Employee>(employee, Employee);
+            // }
             get: function () { return null; },
             set: function (v) { },
             enumerable: true,
@@ -187,20 +180,16 @@ var Examples;
     // console.log('static property ' + (t3.getTime() - t2.getTime()));
     // console.log('static field ' + (t4.getTime() - t3.getTime()));
     //op.describe(ev);
-    var person1 = Employee.New({
+    var person1 = op.createNew(Employee, {
         FirstName: 'Bruce',
         MiddleName: 'B',
         Surname: 'Anderson',
-        HomeAddress: Address.New({
+        HomeAddress: op.createNew(Address, {
             Street: '1600 Pennsylvania Ave',
             ZipCode: '90210'
         }),
     });
-    //const emPropIDLookup = Reflect.getMetadata(op.tsp_propIDLookup, person1);
-    //console.log('emPropIDLookup = ');
-    //console.log(emPropIDLookup);
-    //op.describe(person1);
-    //const person2 = new Employee();
+    console.log(person1);
     person1.Surname = 'Bruce';
     console.log(person1.Surname);
     ev1.MiddleName = 'test';

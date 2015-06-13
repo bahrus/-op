@@ -197,10 +197,16 @@ module op{
 		return returnType;
 	}
 	
-	export function initializer(classInitFn: Function){
-		return function(target: Function){
-			//debugger;
-		}
+	// export function initializer(classInitFn: Function){
+	// 	return function(target: Function){
+	// 		//debugger;
+	// 	}
+	// }
+	
+	export function createNew<TargetType, BaseInterfaceType>(classRef: Function, obj: BaseInterfaceType ){
+		const implObj = new (<any>classRef)();
+		Object['assign'](implObj, obj);
+		return <TargetType> implObj;
 	}
 	
 	export function reflectionType(typealias: Function){

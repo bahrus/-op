@@ -162,12 +162,17 @@ var op;
         }
         return returnType;
     }
-    function initializer(classInitFn) {
-        return function (target) {
-            //debugger;
-        };
+    // export function initializer(classInitFn: Function){
+    // 	return function(target: Function){
+    // 		//debugger;
+    // 	}
+    // }
+    function createNew(classRef, obj) {
+        var implObj = new classRef();
+        Object['assign'](implObj, obj);
+        return implObj;
     }
-    op.initializer = initializer;
+    op.createNew = createNew;
     function reflectionType(typealias) {
         return function (classPrototype, fieldName) {
             var propertyDescriptor = getPropertyDescriptor(classPrototype, fieldName);

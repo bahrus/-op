@@ -3,22 +3,14 @@
 
 module Examples{
 	
-	interface IAddressStruct{
+	interface IAddress{
 		Street?: string;
 		ZipCode?: string;
 	}
 	
-	@op.initializer(Address.New2)
-	class Address implements IAddressStruct{
+	//@op.initializer(Address.New2)
+	class Address implements IAddress{
 		
-		public static New(address: IAddressStruct){
-			const addressImpl = new Address();
-			Object['assign'](addressImpl, address);
-			return addressImpl;
-		}
-		
-		
-		public static New2 : (address: IAddressStruct) => Address;
 		
 		//public static Street = 'Street';
 		@op.toProp()
@@ -29,21 +21,22 @@ module Examples{
 		public ZipCode : string;
 	}
 	
-	interface IEmployeeStruct{
+	interface IEmployee{
 		Surname?: string;
 		FirstName?: string;
 		MiddleName?: string;
-		HomeAddress?:  IAddressStruct;
+		HomeAddress?:  IAddress;
 	}
 	
 	
-	export class Employee implements IEmployeeStruct{
+	export class Employee implements IEmployee{
 		
-		public static New(employee: IEmployeeStruct){
-			const employeeImpl = new Employee();
-			Object['assign'](employeeImpl, employee);
-			return employeeImpl;
-		}
+		// public static New(employee: IEmployee){
+		// 	// const employeeImpl = new Employee();
+		// 	// Object['assign'](employeeImpl, employee);
+		// 	// return employeeImpl;
+		// 	return op.createNew<IEmployee, Employee>(employee, Employee);
+		// }
 		
 		@op.initProp()
 		public get Surname() : string{return null;} 
@@ -79,7 +72,7 @@ module Examples{
 		}
 		
 		@op.reflectionType(Address)
-		public TempAddress: IAddressStruct;
+		public TempAddress : IAddress;
 	}
 	
 	console.log('reflect Employee => ');
@@ -114,7 +107,7 @@ module Examples{
 		}
 	}
 	
-	class AddressView extends Address implements IAddressStruct{
+	class AddressView extends Address implements IAddress{
 		//@op.toProp()
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
@@ -124,7 +117,7 @@ module Examples{
 		public street: string;
 	}
 	
-	class EmployeeView extends Employee implements IEmployeeStruct{
+	class EmployeeView extends Employee implements IEmployee{
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
 				maxLength: 10
@@ -181,23 +174,18 @@ module Examples{
 	// console.log('static field ' + (t4.getTime() - t3.getTime()));
 	//op.describe(ev);
 	
-	const person1 = Employee.New({
-		FirstName: 'Bruce',
+	
+	const person1 = op.createNew<Employee, IEmployee>(Employee, {
+		FirstName : 'Bruce',
 		MiddleName: 'B',
 		Surname: 'Anderson',
-		HomeAddress: Address.New({
+		HomeAddress: op.createNew<Address, IAddress>(Address, {
 			Street: '1600 Pennsylvania Ave',
 			ZipCode: '90210'	
 		}),
 	});
 	
-	//const emPropIDLookup = Reflect.getMetadata(op.tsp_propIDLookup, person1);
-	//console.log('emPropIDLookup = ');
-	//console.log(emPropIDLookup);
-	
-	//op.describe(person1);
-	//const person2 = new Employee();
-	
+	console.log(person1);
 	person1.Surname = 'Bruce';
 	console.log(person1.Surname);
 	ev1.MiddleName = 'test';
