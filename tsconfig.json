@@ -5,6 +5,6 @@
 		"sourceMap": true
 	},
 	"files": [
-    	"html/@op.ts", "html/Employee.ts"
+    	"@op.ts", "Employee.ts"
   	]
 }

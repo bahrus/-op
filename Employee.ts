@@ -1,4 +1,3 @@
-///<reference path='../node_modules/reflect-metadata/reflect-metadata.d.ts'/>
 ///<reference path='@op.ts'/>
 
 module Examples{
@@ -19,6 +18,8 @@ module Examples{
 		//public static ZipCode = 'ZipCode';
 		@op.toProp()
 		public ZipCode : string;
+		
+		
 	}
 	
 	interface IEmployee{
@@ -53,6 +54,7 @@ module Examples{
 		
 		private _firstName : string;
 		
+		@op.initProp()
 		public get FirstName() : string{
 			return this._firstName;
 		}
@@ -154,6 +156,8 @@ module Examples{
 	
 	console.log('reflect on EmployeeView =>');
 	console.log(op.reflect(EmployeeView, true));
+	console.log('generate interface =>');
+	console.log(op.generateInterface(Employee));
 	
 	var ev = new EmployeeView();
 	ev.MiddleName = 'myMiddleName';

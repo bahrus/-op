@@ -1,4 +1,3 @@
-///<reference path='../node_modules/reflect-metadata/reflect-metadata.d.ts'/>
 ///<reference path='@op.ts'/>
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -33,6 +32,11 @@ var Examples;
         ], Address.prototype, "ZipCode");
         return Address;
     })();
+    var EmployeeImpl = (function () {
+        function EmployeeImpl() {
+        }
+        return EmployeeImpl;
+    })();
     var Employee = (function () {
         function Employee() {
         }
@@ -59,6 +63,11 @@ var Examples;
                 op.initProp(), 
                 __metadata('design:type', String)
             ], Employee.prototype, "Surname", Object.getOwnPropertyDescriptor(Employee.prototype, "Surname")));
+        Object.defineProperty(Employee.prototype, "FirstName",
+            __decorate([
+                op.initProp(), 
+                __metadata('design:type', String)
+            ], Employee.prototype, "FirstName", Object.getOwnPropertyDescriptor(Employee.prototype, "FirstName")));
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {
@@ -158,6 +167,8 @@ var Examples;
     })(Employee);
     console.log('reflect on EmployeeView =>');
     console.log(op.reflect(EmployeeView, true));
+    console.log('generate interface =>');
+    console.log(op.generateInterface(Employee));
     var ev = new EmployeeView();
     ev.MiddleName = 'myMiddleName';
     //const evPropIDLookup = Reflect.getMetadata(op.tsp_propIDLookup, ev);

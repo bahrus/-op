@@ -1,4 +1,4 @@
-///<reference path='../node_modules/reflect-metadata/reflect-metadata.d.ts'/>
+///<reference path='reflect-metadata.d.ts'/>
 
 if (!Object['assign']) {
 	//from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -33,6 +33,10 @@ if (!Object['assign']) {
     }
   });
 }
+
+// interface Object{
+// 	assign: (targetObj: Object, sourceObj: Object) => Object;
+// }
 
 module op{
 	
@@ -108,7 +112,14 @@ module op{
 		}
 	}
 	
-	
+	export function description(value: string){
+		return (classPrototype: Function, fieldName: string) =>{
+			const desc = {
+				'@op_description': value,
+			}
+			plopIntoPropMeta(desc, classPrototype, fieldName);
+		}
+	}
 	
 	export interface IReflectionEntity{
 		name: string;
@@ -141,6 +152,30 @@ module op{
 		const returnType = reflectPrototype(classPrototype, recursive);
 		addMemberInfo(returnType, classRef, false, true);
 		return returnType;
+	}
+	
+	const designTypeMetaKey = 'design:type';
+	
+	function getPropertyType(prop: IPropertyInfo){
+		if(!prop.metadata) return 'unknownType';
+		const designType = prop.metadata[designTypeMetaKey];
+		if(!designType) return 'unknownType';
+		const designTypeString = designType.toString().replace('function ', '');
+		const iPosOfParenthesis = designTypeString.indexOf('(');
+		return designTypeString.substring(0, iPosOfParenthesis);
+	}	
+	export function generateInterface(classRef : Function){
+		const reflectedClass = reflect(classRef, false);
+		const interfaceString = `
+			interface I${reflectedClass.name}{
+				${
+					reflectedClass.properties.map(prop =>{
+						return ` ${prop.name} : ${getPropertyType(prop)};` 
+					}).join('\n\r')
+				}
+			}
+		`;
+		return interfaceString;
 	}
 	
 	function getPropertyDescriptor(classPrototype: any, memberKey: string){
@@ -191,7 +226,7 @@ module op{
 						returnType.staticProperties.push(propInfo);
 					}
 					if(recursive){
-						const propertyType = Reflect.getMetadata('design:type', classRefOrClassPrototype, memberKey);
+						const propertyType = Reflect.getMetadata(designTypeMetaKey, classRefOrClassPrototype, memberKey);
 						if(propertyType){
 							propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
 						}
@@ -221,10 +256,10 @@ module op{
 	// 	}
 	// }
 	
-	export function createNew<TargetType, BaseInterfaceType>(classRef: Function, obj: BaseInterfaceType ){
+	export function createNew<InterfaceImplementorType, InterfaceType>(classRef: Function, obj: InterfaceType ){
 		const implObj = new (<any>classRef)();
 		Object['assign'](implObj, obj);
-		return <TargetType> implObj;
+		return <InterfaceImplementorType> implObj;
 	}
 	
 	export function reflectionType(typealias: Function){
@@ -233,7 +268,7 @@ module op{
 			if(!propertyDescriptor){
 				toProp()(classPrototype, fieldName);
 			}
-			Reflect.defineMetadata('design:type', typealias, classPrototype, fieldName);
+			Reflect.defineMetadata(designTypeMetaKey, typealias, classPrototype, fieldName);
 		}
 	}
 	

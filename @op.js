@@ -1,4 +1,4 @@
-///<reference path='../node_modules/reflect-metadata/reflect-metadata.d.ts'/>
+///<reference path='reflect-metadata.d.ts'/>
 if (!Object['assign']) {
     //from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     Object.defineProperty(Object, 'assign', {
@@ -30,6 +30,9 @@ if (!Object['assign']) {
         }
     });
 }
+// interface Object{
+// 	assign: (targetObj: Object, sourceObj: Object) => Object;
+// }
 var op;
 (function (op) {
     op.getter = function (ID) {
@@ -102,6 +105,15 @@ var op;
         };
     }
     op.plopIntoMeta = plopIntoMeta;
+    function description(value) {
+        return function (classPrototype, fieldName) {
+            var desc = {
+                '@op_description': value,
+            };
+            plopIntoPropMeta(desc, classPrototype, fieldName);
+        };
+    }
+    op.description = description;
     function reflect(classRef, recursive) {
         var classPrototype = classRef.prototype;
         var returnType = reflectPrototype(classPrototype, recursive);
@@ -109,6 +121,25 @@ var op;
         return returnType;
     }
     op.reflect = reflect;
+    var designTypeMetaKey = 'design:type';
+    function getPropertyType(prop) {
+        if (!prop.metadata)
+            return 'unknownType';
+        var designType = prop.metadata[designTypeMetaKey];
+        if (!designType)
+            return 'unknownType';
+        var designTypeString = designType.toString().replace('function ', '');
+        var iPosOfParenthesis = designTypeString.indexOf('(');
+        return designTypeString.substring(0, iPosOfParenthesis);
+    }
+    function generateInterface(classRef) {
+        var reflectedClass = reflect(classRef, false);
+        var interfaceString = "\n\t\t\tinterface I" + reflectedClass.name + "{\n\t\t\t\t" + reflectedClass.properties.map(function (prop) {
+            return " " + prop.name + " : " + getPropertyType(prop) + ";";
+        }).join('\n\r') + "\n\t\t\t}\n\t\t";
+        return interfaceString;
+    }
+    op.generateInterface = generateInterface;
     function getPropertyDescriptor(classPrototype, memberKey) {
         while (classPrototype) {
             var propertyDescriptor = Object.getOwnPropertyDescriptor(classPrototype, memberKey);
@@ -162,7 +193,7 @@ var op;
                         returnType.staticProperties.push(propInfo);
                     }
                     if (recursive) {
-                        var propertyType = Reflect.getMetadata('design:type', classRefOrClassPrototype, memberKey);
+                        var propertyType = Reflect.getMetadata(designTypeMetaKey, classRefOrClassPrototype, memberKey);
                         if (propertyType) {
                             propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
                         }
@@ -198,7 +229,7 @@ var op;
             if (!propertyDescriptor) {
                 toProp()(classPrototype, fieldName);
             }
-            Reflect.defineMetadata('design:type', typealias, classPrototype, fieldName);
+            Reflect.defineMetadata(designTypeMetaKey, typealias, classPrototype, fieldName);
         };
     }
     op.reflectionType = reflectionType;
