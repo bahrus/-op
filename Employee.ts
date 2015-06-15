@@ -84,6 +84,11 @@ module Examples{
 		
 		@op.reflectionType(Address)
 		public TempAddress : IAddress;
+		
+		
+		public findLocation(emp: Employee, s: string) : boolean{
+			return true;
+		}
 	}
 	
 	console.log('reflect Employee => ');

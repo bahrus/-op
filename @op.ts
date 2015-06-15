@@ -144,6 +144,11 @@ module op{
 	
 	export interface IMethodInfo extends IMemberInfo {
 		returnType?: IType;
+		args: IMethodArgument[];
+	}
+	
+	export interface IMethodArgument extends IReflectionEntity {
+		
 	}
 	
 	export function reflect(classRef : Function, recursive?: boolean){
@@ -167,14 +172,14 @@ module op{
 	export function generateInterface(classRef : Function){
 		const reflectedClass = reflect(classRef, false);
 		const interfaceString = `
-			interface I${reflectedClass.name}{
-				${
-					reflectedClass.properties.map(prop =>{
-						return ` ${prop.name} : ${getPropertyType(prop)};` 
-					}).join('\n\r')
-				}
-			}
-		`;
+export interface I${reflectedClass.name}{
+${
+	reflectedClass.properties.map(prop =>{
+		return `   ${prop.name} : ${getPropertyType(prop)};` 
+	}).join('\n\r')
+}
+}
+`;
 		return interfaceString;
 	}
 	
@@ -188,6 +193,13 @@ module op{
 		
 	}
 	
+	function substring_between(value: string, LHDelim: string, RHDelim: string){
+		const iPosOfLHDelim = value.indexOf(LHDelim);
+		if(iPosOfLHDelim === -1) return null;
+		const iPosOfRHDelim = value.indexOf(RHDelim);
+		if(iPosOfRHDelim === -1) return value.substring(iPosOfLHDelim + LHDelim.length);
+		return value.substring(iPosOfLHDelim + LHDelim.length, iPosOfRHDelim);
+	}
 	function addMemberInfo(returnType: IType, classRefOrClassPrototype: any, isPrototype: boolean, recursive?: boolean){
 		for(const memberKey in classRefOrClassPrototype){
 			const propertyDescriptor = getPropertyDescriptor(classRefOrClassPrototype, memberKey);
@@ -206,6 +218,14 @@ module op{
 				if(propertyDescriptor.value){
 					//#region method
 					const methodInfo = <IMethodInfo> memberInfo;
+					const methodSignature = propertyDescriptor.value.toString();
+					const signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
+					const paramNames = signatureInsideParenthesis.split(',');
+					methodInfo.args = paramNames.map(arg => {
+						return {
+							name: arg.trim(),
+						}
+					});
 					if(isPrototype){
 						if(!returnType.methods) returnType.methods = [];
 						returnType.methods.push(methodInfo);

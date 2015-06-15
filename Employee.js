@@ -58,6 +58,9 @@ var Examples;
         });
         Employee.prototype.DriveHome = function () {
         };
+        Employee.prototype.findLocation = function (emp, s) {
+            return true;
+        };
         Object.defineProperty(Employee.prototype, "Surname",
             __decorate([
                 op.initProp(), 

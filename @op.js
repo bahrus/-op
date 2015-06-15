@@ -134,9 +134,9 @@ var op;
     }
     function generateInterface(classRef) {
         var reflectedClass = reflect(classRef, false);
-        var interfaceString = "\n\t\t\tinterface I" + reflectedClass.name + "{\n\t\t\t\t" + reflectedClass.properties.map(function (prop) {
-            return " " + prop.name + " : " + getPropertyType(prop) + ";";
-        }).join('\n\r') + "\n\t\t\t}\n\t\t";
+        var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + reflectedClass.properties.map(function (prop) {
+            return "   " + prop.name + " : " + getPropertyType(prop) + ";";
+        }).join('\n\r') + "\n}\n";
         return interfaceString;
     }
     op.generateInterface = generateInterface;
@@ -148,6 +148,15 @@ var op;
             classPrototype = classPrototype.__proto__;
         }
         return null;
+    }
+    function substring_between(value, LHDelim, RHDelim) {
+        var iPosOfLHDelim = value.indexOf(LHDelim);
+        if (iPosOfLHDelim === -1)
+            return null;
+        var iPosOfRHDelim = value.indexOf(RHDelim);
+        if (iPosOfRHDelim === -1)
+            return value.substring(iPosOfLHDelim + LHDelim.length);
+        return value.substring(iPosOfLHDelim + LHDelim.length, iPosOfRHDelim);
     }
     function addMemberInfo(returnType, classRefOrClassPrototype, isPrototype, recursive) {
         for (var memberKey in classRefOrClassPrototype) {
@@ -168,6 +177,14 @@ var op;
                 if (propertyDescriptor.value) {
                     //#region method
                     var methodInfo = memberInfo;
+                    var methodSignature = propertyDescriptor.value.toString();
+                    var signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
+                    var paramNames = signatureInsideParenthesis.split(',');
+                    methodInfo.args = paramNames.map(function (arg) {
+                        return {
+                            name: arg.trim(),
+                        };
+                    });
                     if (isPrototype) {
                         if (!returnType.methods)
                             returnType.methods = [];
