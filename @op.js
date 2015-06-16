@@ -105,6 +105,13 @@ var op;
         };
     }
     op.plopIntoMeta = plopIntoMeta;
+    function _(target, key, index) {
+        // var indices = Reflect.getMetadata(`log_${key}_parameters`, target, key) || [];
+        // debugger;
+        // indices.push(index); 
+        // Reflect.defineMetadata(`log_${key}_parameters`, indices, target, key);
+    }
+    op._ = _;
     function description(value) {
         return function (classPrototype, fieldName) {
             var desc = {
@@ -180,11 +187,27 @@ var op;
                     var methodSignature = propertyDescriptor.value.toString();
                     var signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
                     var paramNames = signatureInsideParenthesis.split(',');
-                    methodInfo.args = paramNames.map(function (arg) {
-                        return {
-                            name: arg.trim(),
-                        };
-                    });
+                    if (memberInfo.metadata) {
+                        var paramTypes = memberInfo.metadata['design:paramtypes'];
+                        if (paramTypes.length > 0) {
+                            if (paramNames.length !== paramTypes.length) {
+                                throw "Discrepency found in method parameters for method:  " + memberKey;
+                            }
+                            methodInfo.args = [];
+                            for (var i = 0, n = paramTypes.length; i < n; i++) {
+                                var paramInfo = {
+                                    name: paramNames[i].trim(),
+                                    argumentClassRef: paramTypes[i],
+                                };
+                                methodInfo.args.push(paramInfo);
+                            }
+                        }
+                    }
+                    // methodInfo.args = paramNames.map(arg => {
+                    // 	return {
+                    // 		name: arg.trim(),
+                    // 	}
+                    // });
                     if (isPrototype) {
                         if (!returnType.methods)
                             returnType.methods = [];

@@ -38,6 +38,8 @@ if (!Object['assign']) {
 // 	assign: (targetObj: Object, sourceObj: Object) => Object;
 // }
 
+
+
 module op{
 	
 	export const getter = function(ID: string){
@@ -112,6 +114,13 @@ module op{
 		}
 	}
 	
+	export function _(target: any, key: string, index: number) {
+		// var indices = Reflect.getMetadata(`log_${key}_parameters`, target, key) || [];
+		// debugger;
+		// indices.push(index); 
+		// Reflect.defineMetadata(`log_${key}_parameters`, indices, target, key);
+	}
+	
 	export function description(value: string){
 		return (classPrototype: Function, fieldName: string) =>{
 			const desc = {
@@ -148,7 +157,8 @@ module op{
 	}
 	
 	export interface IMethodArgument extends IReflectionEntity {
-		
+		//argumentType?:  IType;
+		argumentClassRef?: any;
 	}
 	
 	export function reflect(classRef : Function, recursive?: boolean){
@@ -221,11 +231,30 @@ ${
 					const methodSignature = propertyDescriptor.value.toString();
 					const signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
 					const paramNames = signatureInsideParenthesis.split(',');
-					methodInfo.args = paramNames.map(arg => {
-						return {
-							name: arg.trim(),
+					if(memberInfo.metadata){
+						const paramTypes = memberInfo.metadata['design:paramtypes'];
+						if(paramTypes.length > 0){
+							if(paramNames.length !== paramTypes.length){
+							throw `Discrepency found in method parameters for method:  ${memberKey}`;
+							}
+							methodInfo.args = [];
+							for(let i = 0, n = paramTypes.length; i < n; i++){
+								const paramInfo : IMethodArgument = {
+									name: paramNames[i].trim(),
+									argumentClassRef: paramTypes[i],
+								}
+								methodInfo.args.push(paramInfo);
+							}
 						}
-					});
+					}
+					
+					
+					// methodInfo.args = paramNames.map(arg => {
+						
+					// 	return {
+					// 		name: arg.trim(),
+					// 	}
+					// });
 					if(isPrototype){
 						if(!returnType.methods) returnType.methods = [];
 						returnType.methods.push(methodInfo);

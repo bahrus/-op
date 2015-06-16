@@ -86,7 +86,7 @@ module Examples{
 		public TempAddress : IAddress;
 		
 		
-		public findLocation(emp: Employee, s: string) : boolean{
+		public findLocation(@op._ emp: Employee, s: string) : boolean{
 			return true;
 		}
 	}

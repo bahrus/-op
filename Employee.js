@@ -16,6 +16,9 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
 if (typeof __metadata !== "function") __metadata = function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+if (typeof __param !== "function") __param = function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var Examples;
 (function (Examples) {
     //@op.initializer(Address.New2)
@@ -98,6 +101,13 @@ var Examples;
             op.reflectionType(Address), 
             __metadata('design:type', Object)
         ], Employee.prototype, "TempAddress");
+        Object.defineProperty(Employee.prototype, "findLocation",
+            __decorate([
+                __param(0, op._), 
+                __metadata('design:type', Function), 
+                __metadata('design:paramtypes', [Employee, String]), 
+                __metadata('design:returntype', Boolean)
+            ], Employee.prototype, "findLocation", Object.getOwnPropertyDescriptor(Employee.prototype, "findLocation")));
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {
