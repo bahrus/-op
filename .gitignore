@@ -1,2 +1,4 @@
 /logs/*.log
 /logs/*.pid
+/*.map
+*.map
