@@ -149,16 +149,51 @@ module op{
 	
 	export interface IPropertyInfo extends IMemberInfo {
 		propertyType?:  IType;
+		propertyTypeClassRef?: Function;
 	}
 	
+	export class PropertyInfo implements IPropertyInfo{
+		constructor(public name: string, public propertyTypeClassRef: Function){}
+		private _propertyType;
+		public get propertyType(){
+			if(!this._propertyType){
+				this._propertyType = reflectPrototype(this.propertyTypeClassRef.prototype, true);
+			}
+			return this._propertyType;
+		}
+	
+	}
 	export interface IMethodInfo extends IMemberInfo {
 		returnType?: IType;
-		args: IMethodArgument[];
+		returnTypeClassRef?: Function;
+		args?: IMethodArgument[];
+	}
+	
+	export class MethodInfo implements IMethodInfo{
+		constructor(public name: string, public args: IMethodArgument[], public returnTypeClassRef?: Function){}
+		private _returnType: IType;	
+		public get returnType(){
+			if(!this._returnType){
+				this._returnType = reflectPrototype(this.returnTypeClassRef.prototype, true);
+			}
+			return this._returnType;
+		}	
 	}
 	
 	export interface IMethodArgument extends IReflectionEntity {
-		//argumentType?:  IType;
-		argumentClassRef?: any;
+		argumentType?:  IType;
+		argumentTypeClassRef?: any;
+	}
+	
+	export class MethodArgument implements IMethodArgument{
+		constructor(public name: string, public argumentTypeClassRef: Function){}
+		private _argumentType : IType;
+		public get argumentType(){
+			if(!this._argumentType){
+				this._argumentType = reflectPrototype(this.argumentTypeClassRef.prototype, true);
+			}
+			return this._argumentType;
+		}
 	}
 	
 	export function reflect(classRef : Function, recursive?: boolean){
@@ -227,7 +262,8 @@ ${
 				}
 				if(propertyDescriptor.value){
 					//#region method
-					const methodInfo = <IMethodInfo> memberInfo;
+					//const methodInfo = <IMethodInfo> memberInfo;
+					const methodInfo = createNew<MethodInfo, IMemberInfo>(MethodInfo, memberInfo);
 					const methodSignature = propertyDescriptor.value.toString();
 					const signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
 					const paramNames = signatureInsideParenthesis.split(',');
@@ -238,11 +274,10 @@ ${
 							throw `Discrepency found in method parameters for method:  ${memberKey}`;
 							}
 							methodInfo.args = [];
+							methodInfo.returnTypeClassRef = memberInfo.metadata['design:returntype'];
 							for(let i = 0, n = paramTypes.length; i < n; i++){
-								const paramInfo : IMethodArgument = {
-									name: paramNames[i].trim(),
-									argumentClassRef: paramTypes[i],
-								}
+								const paramInfo = new MethodArgument(paramNames[i].trim(), paramTypes[i]);
+								
 								methodInfo.args.push(paramInfo);
 							}
 						}
@@ -266,7 +301,8 @@ ${
 					//#endregion
 				}else if(propertyDescriptor.get || propertyDescriptor.set){
 					//#region property
-					const propInfo = <IPropertyInfo> memberInfo;
+					const propInfo = op.createNew<PropertyInfo, IMemberInfo>(PropertyInfo, memberInfo); 
+					
 					if(isPrototype){
 						if(!returnType.properties) returnType.properties = [];
 						returnType.properties.push(propInfo);
@@ -274,11 +310,12 @@ ${
 						if(!returnType.staticProperties) returnType.staticProperties = [];
 						returnType.staticProperties.push(propInfo);
 					}
-					if(recursive){
+					 if(recursive){
 						const propertyType = Reflect.getMetadata(designTypeMetaKey, classRefOrClassPrototype, memberKey);
-						if(propertyType){
-							propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
-						}
+						propInfo.propertyTypeClassRef = propertyType;
+					// 	if(propertyType){
+					// 		propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
+					// 	}
 					}
 					
 					//#endregion

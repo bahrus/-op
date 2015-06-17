@@ -121,6 +121,61 @@ var op;
         };
     }
     op.description = description;
+    var PropertyInfo = (function () {
+        function PropertyInfo(name, propertyTypeClassRef) {
+            this.name = name;
+            this.propertyTypeClassRef = propertyTypeClassRef;
+        }
+        Object.defineProperty(PropertyInfo.prototype, "propertyType", {
+            get: function () {
+                if (!this._propertyType) {
+                    this._propertyType = reflectPrototype(this.propertyTypeClassRef.prototype, true);
+                }
+                return this._propertyType;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return PropertyInfo;
+    })();
+    op.PropertyInfo = PropertyInfo;
+    var MethodInfo = (function () {
+        function MethodInfo(name, args, returnTypeClassRef) {
+            this.name = name;
+            this.args = args;
+            this.returnTypeClassRef = returnTypeClassRef;
+        }
+        Object.defineProperty(MethodInfo.prototype, "returnType", {
+            get: function () {
+                if (!this._returnType) {
+                    this._returnType = reflectPrototype(this.returnTypeClassRef.prototype, true);
+                }
+                return this._returnType;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return MethodInfo;
+    })();
+    op.MethodInfo = MethodInfo;
+    var MethodArgument = (function () {
+        function MethodArgument(name, argumentTypeClassRef) {
+            this.name = name;
+            this.argumentTypeClassRef = argumentTypeClassRef;
+        }
+        Object.defineProperty(MethodArgument.prototype, "argumentType", {
+            get: function () {
+                if (!this._argumentType) {
+                    this._argumentType = reflectPrototype(this.argumentTypeClassRef.prototype, true);
+                }
+                return this._argumentType;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return MethodArgument;
+    })();
+    op.MethodArgument = MethodArgument;
     function reflect(classRef, recursive) {
         var classPrototype = classRef.prototype;
         var returnType = reflectPrototype(classPrototype, recursive);
@@ -183,7 +238,8 @@ var op;
                 }
                 if (propertyDescriptor.value) {
                     //#region method
-                    var methodInfo = memberInfo;
+                    //const methodInfo = <IMethodInfo> memberInfo;
+                    var methodInfo = createNew(MethodInfo, memberInfo);
                     var methodSignature = propertyDescriptor.value.toString();
                     var signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
                     var paramNames = signatureInsideParenthesis.split(',');
@@ -194,11 +250,9 @@ var op;
                                 throw "Discrepency found in method parameters for method:  " + memberKey;
                             }
                             methodInfo.args = [];
+                            methodInfo.returnTypeClassRef = memberInfo.metadata['design:returntype'];
                             for (var i = 0, n = paramTypes.length; i < n; i++) {
-                                var paramInfo = {
-                                    name: paramNames[i].trim(),
-                                    argumentClassRef: paramTypes[i],
-                                };
+                                var paramInfo = new MethodArgument(paramNames[i].trim(), paramTypes[i]);
                                 methodInfo.args.push(paramInfo);
                             }
                         }
@@ -221,7 +275,7 @@ var op;
                 }
                 else if (propertyDescriptor.get || propertyDescriptor.set) {
                     //#region property
-                    var propInfo = memberInfo;
+                    var propInfo = op.createNew(PropertyInfo, memberInfo);
                     if (isPrototype) {
                         if (!returnType.properties)
                             returnType.properties = [];
@@ -234,9 +288,7 @@ var op;
                     }
                     if (recursive) {
                         var propertyType = Reflect.getMetadata(designTypeMetaKey, classRefOrClassPrototype, memberKey);
-                        if (propertyType) {
-                            propInfo.propertyType = reflectPrototype(propertyType.prototype, recursive);
-                        }
+                        propInfo.propertyTypeClassRef = propertyType;
                     }
                 }
             }
