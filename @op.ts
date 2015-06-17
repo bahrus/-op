@@ -213,7 +213,8 @@ module op{
 		const designTypeString = designType.toString().replace('function ', '');
 		const iPosOfParenthesis = designTypeString.indexOf('(');
 		return designTypeString.substring(0, iPosOfParenthesis);
-	}	
+	}
+		
 	export function generateInterface(classRef : Function){
 		const reflectedClass = reflect(classRef, false);
 		const interfaceString = `
@@ -222,6 +223,11 @@ ${
 	reflectedClass.properties.map(prop =>{
 		return `   ${prop.name} : ${getPropertyType(prop)};` 
 	}).join('\n\r')
+}
+${
+	reflectedClass.methods.map(method =>{
+		return `  ${method.name}`
+	})
 }
 }
 `;

@@ -89,6 +89,7 @@ module Examples{
 		public findLocation(@op._ emp: Employee, s: string) : boolean{
 			return true;
 		}
+		
 	}
 	
 	console.log('reflect Employee => ');

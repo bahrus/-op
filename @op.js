@@ -198,7 +198,9 @@ var op;
         var reflectedClass = reflect(classRef, false);
         var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + reflectedClass.properties.map(function (prop) {
             return "   " + prop.name + " : " + getPropertyType(prop) + ";";
-        }).join('\n\r') + "\n}\n";
+        }).join('\n\r') + "\n" + reflectedClass.methods.map(function (method) {
+            return "  " + method.name;
+        }) + "\n}\n";
         return interfaceString;
     }
     op.generateInterface = generateInterface;
