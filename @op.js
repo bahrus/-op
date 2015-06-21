@@ -35,6 +35,8 @@ if (!Object['assign']) {
 // }
 var op;
 (function (op) {
+    var designTypeMetaKey = 'design:type';
+    var op_description = '@op:description';
     op.getter = function (ID) {
         return function () {
             var lu = this['__@op'];
@@ -114,10 +116,12 @@ var op;
     op._ = _;
     function description(value) {
         return function (classPrototype, fieldName) {
-            var desc = {
-                '@op:description': value,
-            };
+            var desc = (_a = {},
+                _a[op_description] = value,
+                _a
+            );
             plopIntoPropMeta(desc, classPrototype, fieldName);
+            var _a;
         };
     }
     op.description = description;
@@ -183,7 +187,6 @@ var op;
         return returnType;
     }
     op.reflect = reflect;
-    var designTypeMetaKey = 'design:type';
     function getPropertyType(prop) {
         if (!prop.metadata)
             return 'unknownType';
@@ -211,7 +214,14 @@ var op;
     }
     function generatePropertyList(typ) {
         var returnStr = typ.properties.map(function (prop) {
-            return "" + memberIndent + prop.name + " : " + getPropertyType(prop) + ";";
+            var returnStr = '';
+            if (prop.metadata[op_description]) {
+                returnStr += memberIndent + "/**\n\r";
+                returnStr += memberIndent + "* " + prop.metadata[op_description] + "\n\r";
+                returnStr += memberIndent + "*/\n\r";
+            }
+            returnStr += "" + memberIndent + prop.name + " : " + getPropertyType(prop) + ";";
+            return returnStr;
         }).join('\n\r');
         return returnStr;
     }

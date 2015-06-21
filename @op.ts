@@ -42,6 +42,9 @@ if (!Object['assign']) {
 
 module op{
 	
+	const designTypeMetaKey = 'design:type';
+	const op_description = '@op:description';
+	
 	export const getter = function(ID: string){
 		return function(){
 			const lu = this['__@op'];
@@ -124,7 +127,7 @@ module op{
 	export function description(value: string){
 		return (classPrototype: Function, fieldName: string) =>{
 			const desc = {
-				'@op:description': value,
+				[op_description]: value,
 			}
 			plopIntoPropMeta(desc, classPrototype, fieldName);
 		}
@@ -204,7 +207,7 @@ module op{
 		return returnType;
 	}
 	
-	const designTypeMetaKey = 'design:type';
+	
 	
 	function getPropertyType(prop: IPropertyInfo){
 		if(!prop.metadata) return 'unknownType';
@@ -236,7 +239,14 @@ module op{
 	
 	function generatePropertyList(typ: IType) : string{
 		const returnStr = typ.properties.map(prop =>{
-			return `${memberIndent}${prop.name} : ${getPropertyType(prop)};` 
+			let returnStr = '';
+			if(prop.metadata[op_description]){
+				returnStr += `${memberIndent}/**\n\r`;
+				returnStr += `${memberIndent}* ${prop.metadata[op_description]}\n\r`;
+				returnStr += `${memberIndent}*/\n\r`;
+			}
+			returnStr += `${memberIndent}${prop.name} : ${getPropertyType(prop)};`;
+			return  returnStr;
 		}).join('\n\r');
 		return returnStr;
 	}
