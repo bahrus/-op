@@ -210,9 +210,26 @@ module op{
 		if(!prop.metadata) return 'unknownType';
 		const designType = prop.metadata[designTypeMetaKey];
 		if(!designType) return 'unknownType';
-		const designTypeString = designType.toString().replace('function ', '');
-		const iPosOfParenthesis = designTypeString.indexOf('(');
-		return designTypeString.substring(0, iPosOfParenthesis);
+		return getTypeString(designType); 
+	}
+	
+	function getTypeString(classRef: Function){
+		const prototypeName = classRef.toString().replace('function ', '');
+		const iPosOfParenthesis = prototypeName.indexOf('(');
+		return prototypeName.substring(0, iPosOfParenthesis);
+	}
+	
+	function generateMethod(method: IMethodInfo){
+		let args = '';
+		if(method.args){
+			args = method.args.map(arg => arg.name + ': ' + 
+			getTypeString(arg.argumentTypeClassRef)).join(', ');
+		}
+		return `${method.name}(${args})`
+	}
+	
+	function generateMethodList(typ: IType) : string {
+		return typ.methods.map(method => generateMethod(method)).join(';\n\r');
 	}
 		
 	export function generateInterface(classRef : Function){
@@ -225,9 +242,7 @@ ${
 	}).join('\n\r')
 }
 ${
-	reflectedClass.methods.map(method =>{
-		return `  ${method.name}`
-	})
+	generateMethodList(reflectedClass)
 }
 }
 `;
@@ -251,6 +266,7 @@ ${
 		if(iPosOfRHDelim === -1) return value.substring(iPosOfLHDelim + LHDelim.length);
 		return value.substring(iPosOfLHDelim + LHDelim.length, iPosOfRHDelim);
 	}
+	
 	function addMemberInfo(returnType: IType, classRefOrClassPrototype: any, isPrototype: boolean, recursive?: boolean){
 		for(const memberKey in classRefOrClassPrototype){
 			const propertyDescriptor = getPropertyDescriptor(classRefOrClassPrototype, memberKey);

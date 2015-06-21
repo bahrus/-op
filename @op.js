@@ -190,17 +190,29 @@ var op;
         var designType = prop.metadata[designTypeMetaKey];
         if (!designType)
             return 'unknownType';
-        var designTypeString = designType.toString().replace('function ', '');
-        var iPosOfParenthesis = designTypeString.indexOf('(');
-        return designTypeString.substring(0, iPosOfParenthesis);
+        return getTypeString(designType);
+    }
+    function getTypeString(classRef) {
+        var prototypeName = classRef.toString().replace('function ', '');
+        var iPosOfParenthesis = prototypeName.indexOf('(');
+        return prototypeName.substring(0, iPosOfParenthesis);
+    }
+    function generateMethod(method) {
+        var args = '';
+        if (method.args) {
+            args = method.args.map(function (arg) { return arg.name + ': ' +
+                getTypeString(arg.argumentTypeClassRef); }).join(', ');
+        }
+        return method.name + "(" + args + ")";
+    }
+    function generateMethodList(typ) {
+        return typ.methods.map(function (method) { return generateMethod(method); }).join(';\n\r');
     }
     function generateInterface(classRef) {
         var reflectedClass = reflect(classRef, false);
         var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + reflectedClass.properties.map(function (prop) {
             return "   " + prop.name + " : " + getPropertyType(prop) + ";";
-        }).join('\n\r') + "\n" + reflectedClass.methods.map(function (method) {
-            return "  " + method.name;
-        }) + "\n}\n";
+        }).join('\n\r') + "\n" + generateMethodList(reflectedClass) + "\n}\n";
         return interfaceString;
     }
     op.generateInterface = generateInterface;
