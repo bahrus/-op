@@ -197,13 +197,14 @@ var op;
         var iPosOfParenthesis = prototypeName.indexOf('(');
         return prototypeName.substring(0, iPosOfParenthesis);
     }
+    var memberIndent = '   ';
     function generateMethod(method) {
         var args = '';
         if (method.args) {
             args = method.args.map(function (arg) { return arg.name + ': ' +
                 getTypeString(arg.argumentTypeClassRef); }).join(', ');
         }
-        return method.name + "(" + args + ")";
+        return "" + memberIndent + method.name + "(" + args + ")";
     }
     function generateMethodList(typ) {
         return typ.methods.map(function (method) { return generateMethod(method); }).join(';\n\r');
@@ -211,7 +212,7 @@ var op;
     function generateInterface(classRef) {
         var reflectedClass = reflect(classRef, false);
         var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + reflectedClass.properties.map(function (prop) {
-            return "   " + prop.name + " : " + getPropertyType(prop) + ";";
+            return "" + memberIndent + prop.name + " : " + getPropertyType(prop) + ";";
         }).join('\n\r') + "\n" + generateMethodList(reflectedClass) + "\n}\n";
         return interfaceString;
     }

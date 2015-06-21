@@ -219,13 +219,15 @@ module op{
 		return prototypeName.substring(0, iPosOfParenthesis);
 	}
 	
+	const memberIndent = '   ';
+	
 	function generateMethod(method: IMethodInfo){
 		let args = '';
 		if(method.args){
 			args = method.args.map(arg => arg.name + ': ' + 
 			getTypeString(arg.argumentTypeClassRef)).join(', ');
 		}
-		return `${method.name}(${args})`
+		return `${memberIndent}${method.name}(${args})`
 	}
 	
 	function generateMethodList(typ: IType) : string {
@@ -238,7 +240,7 @@ module op{
 export interface I${reflectedClass.name}{
 ${
 	reflectedClass.properties.map(prop =>{
-		return `   ${prop.name} : ${getPropertyType(prop)};` 
+		return `${memberIndent}${prop.name} : ${getPropertyType(prop)};` 
 	}).join('\n\r')
 }
 ${
