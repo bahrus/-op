@@ -79,7 +79,8 @@ var Examples;
                 ColumnDef: {
                     hide: true,
                 }
-            }), 
+            }),
+            op.description("Middle Name of Employee"), 
             __metadata('design:type', String)
         ], Employee.prototype, "MiddleName");
         __decorate([

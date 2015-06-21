@@ -62,12 +62,12 @@ module Examples{
 			this._firstName = val;
 		}
 		
-		//@op.toProp()
 		@op.plopIntoMeta<IColumnDefCategory>({
 			ColumnDef: {
 				hide: true,
 			}
 		})
+		@op.description(`Middle Name of Employee`)
 		public MiddleName : string;
 		
 		@op.toProp()

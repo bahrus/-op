@@ -124,7 +124,7 @@ module op{
 	export function description(value: string){
 		return (classPrototype: Function, fieldName: string) =>{
 			const desc = {
-				'@op_description': value,
+				'@op:description': value,
 			}
 			plopIntoPropMeta(desc, classPrototype, fieldName);
 		}
@@ -231,7 +231,14 @@ module op{
 	}
 	
 	function generateMethodList(typ: IType) : string {
-		return typ.methods.map(method => generateMethod(method)).join(';\n\r');
+		return typ.methods.map(method => generateMethod(method)).join(';\n\r') + ';';
+	}
+	
+	function generatePropertyList(typ: IType) : string{
+		const returnStr = typ.properties.map(prop =>{
+			return `${memberIndent}${prop.name} : ${getPropertyType(prop)};` 
+		}).join('\n\r');
+		return returnStr;
 	}
 		
 	export function generateInterface(classRef : Function){
@@ -239,9 +246,7 @@ module op{
 		const interfaceString = `
 export interface I${reflectedClass.name}{
 ${
-	reflectedClass.properties.map(prop =>{
-		return `${memberIndent}${prop.name} : ${getPropertyType(prop)};` 
-	}).join('\n\r')
+	generatePropertyList(reflectedClass)
 }
 ${
 	generateMethodList(reflectedClass)

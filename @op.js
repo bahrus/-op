@@ -115,7 +115,7 @@ var op;
     function description(value) {
         return function (classPrototype, fieldName) {
             var desc = {
-                '@op_description': value,
+                '@op:description': value,
             };
             plopIntoPropMeta(desc, classPrototype, fieldName);
         };
@@ -207,13 +207,17 @@ var op;
         return "" + memberIndent + method.name + "(" + args + ")";
     }
     function generateMethodList(typ) {
-        return typ.methods.map(function (method) { return generateMethod(method); }).join(';\n\r');
+        return typ.methods.map(function (method) { return generateMethod(method); }).join(';\n\r') + ';';
+    }
+    function generatePropertyList(typ) {
+        var returnStr = typ.properties.map(function (prop) {
+            return "" + memberIndent + prop.name + " : " + getPropertyType(prop) + ";";
+        }).join('\n\r');
+        return returnStr;
     }
     function generateInterface(classRef) {
         var reflectedClass = reflect(classRef, false);
-        var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + reflectedClass.properties.map(function (prop) {
-            return "" + memberIndent + prop.name + " : " + getPropertyType(prop) + ";";
-        }).join('\n\r') + "\n" + generateMethodList(reflectedClass) + "\n}\n";
+        var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + generatePropertyList(reflectedClass) + "\n" + generateMethodList(reflectedClass) + "\n}\n";
         return interfaceString;
     }
     op.generateInterface = generateInterface;
