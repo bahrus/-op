@@ -203,14 +203,25 @@ var op;
     var memberIndent = '   ';
     function generateMethod(method) {
         var args = '';
+        var jsDocParams = '';
         if (method.args) {
             args = method.args.map(function (arg) { return arg.name + ': ' +
                 getTypeString(arg.argumentTypeClassRef); }).join(', ');
+            method.args.forEach(function (arg) {
+                jsDocParams += memberIndent + " * @param {" + getTypeString(arg.argumentTypeClassRef) + "}\n\r";
+            });
         }
-        return "" + memberIndent + method.name + "(" + args + ")";
+        var returnStr = memberIndent + "/**\n\r";
+        if (method.metadata[op_description]) {
+            returnStr += memberIndent + "* " + method.metadata[op_description] + "\n\r";
+        }
+        returnStr += jsDocParams;
+        returnStr += memberIndent + "*/\n\r";
+        returnStr += "" + memberIndent + method.name + "(" + args + ");\n\r";
+        return returnStr;
     }
     function generateMethodList(typ) {
-        return typ.methods.map(function (method) { return generateMethod(method); }).join(';\n\r') + ';';
+        return typ.methods.map(function (method) { return generateMethod(method); }).join('');
     }
     function generatePropertyList(typ) {
         var returnStr = typ.properties.map(function (prop) {

@@ -226,15 +226,26 @@ module op{
 	
 	function generateMethod(method: IMethodInfo){
 		let args = '';
+		let jsDocParams = '';
 		if(method.args){
 			args = method.args.map(arg => arg.name + ': ' + 
 			getTypeString(arg.argumentTypeClassRef)).join(', ');
+			method.args.forEach(arg =>{
+				jsDocParams += `${memberIndent} * @param {${getTypeString(arg.argumentTypeClassRef)}}\n\r`
+			});
 		}
-		return `${memberIndent}${method.name}(${args})`
+		let returnStr = `${memberIndent}/**\n\r`;
+		if(method.metadata[op_description]){
+			returnStr += `${memberIndent}* ${method.metadata[op_description]}\n\r`;
+		}
+		returnStr += jsDocParams;
+		returnStr += `${memberIndent}*/\n\r`;
+		returnStr +=  `${memberIndent}${method.name}(${args});\n\r`;
+		return returnStr;
 	}
 	
 	function generateMethodList(typ: IType) : string {
-		return typ.methods.map(method => generateMethod(method)).join(';\n\r') + ';';
+		return typ.methods.map(method => generateMethod(method)).join('');
 	}
 	
 	function generatePropertyList(typ: IType) : string{
