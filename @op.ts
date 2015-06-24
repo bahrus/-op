@@ -44,6 +44,7 @@ module op{
 	
 	const designTypeMetaKey = 'design:type';
 	const op_description = '@op:description';
+	const op_autoGenInterface = '@op.autoGenInterface';
 	
 	export const getter = function(ID: string){
 		return function(){
@@ -135,6 +136,7 @@ module op{
 	
 	export interface IReflectionEntity{
 		name: string;
+		metadata?: {[key: string] : any;};
 	}
 	
 	export interface IType extends IReflectionEntity{
@@ -142,11 +144,11 @@ module op{
 		methods?: IMethodInfo[];
 		staticProperties?: IPropertyInfo[];
 		staticMethods?: IMethodInfo[];
+		
 	}
 	
 	export interface IMemberInfo extends IReflectionEntity{
 		propertyDescriptor ?: any;
-		metadata?: {[key: string] : any;};
 		isPublic?: boolean;
 	}
 	
@@ -199,11 +201,20 @@ module op{
 		}
 	}
 	
+	function addClassMeta(classPrototype: any, returnType: IType){
+		const keys = Reflect.getMetadataKeys(classPrototype);
+		returnType.metadata = {};
+		for(let i = 0, n = keys.length; i < n; i++){
+			const key = keys[i];
+			returnType.metadata[key] = Reflect.getMetadata(key, classPrototype);
+		}
+	}
+	
 	export function reflect(classRef : Function, recursive?: boolean){
 		const classPrototype = classRef.prototype;
-		
 		const returnType = reflectPrototype(classPrototype, recursive);
 		addMemberInfo(returnType, classRef, false, true);
+		addClassMeta(classPrototype, returnType)
 		return returnType;
 	}
 	
@@ -245,6 +256,7 @@ module op{
 	}
 	
 	function generateMethodList(typ: IType) : string {
+		if(!typ.methods) return '';
 		return typ.methods.map(method => generateMethod(method)).join('');
 	}
 	
@@ -280,12 +292,19 @@ ${
 	export function generateInterfaces(rootNamespace: Object, namespaceName: string){
 		let returnStrArr = [`module ${namespaceName}{`];
 		for(var key in rootNamespace){
-			if (typeof rootNamespace[key] === 'function'){
+			const member = rootNamespace[key];
+			if (typeof member === 'function'){
+				const typeInfo = reflect(member);
+				if(typeInfo.metadata && typeInfo.metadata[op_autoGenInterface]){
+					returnStrArr.push(generateInterface(member));
+				}
 				
 			}
 		}
 		returnStrArr.push('}');
-		return returnStrArr.join('\n\r');
+		const returnStr = returnStrArr.join('\n\r');
+		debugger;
+		return returnStr;
 	}
 	
 	function getPropertyDescriptor(classPrototype: any, memberKey: string){
@@ -419,5 +438,11 @@ ${
 		}
 	}
 	
+	export function autoGen(description: string){
+		return (classRef: Function) => {
+			Reflect.defineMetadata(op_description, description, classRef.prototype);
+			Reflect.defineMetadata(op_autoGenInterface, true, classRef.prototype);
+		}
+	}
 	
 }

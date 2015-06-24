@@ -37,6 +37,7 @@ var op;
 (function (op) {
     var designTypeMetaKey = 'design:type';
     var op_description = '@op:description';
+    var op_autoGenInterface = '@op.autoGenInterface';
     op.getter = function (ID) {
         return function () {
             var lu = this['__@op'];
@@ -180,10 +181,19 @@ var op;
         return MethodArgument;
     })();
     op.MethodArgument = MethodArgument;
+    function addClassMeta(classPrototype, returnType) {
+        var keys = Reflect.getMetadataKeys(classPrototype);
+        returnType.metadata = {};
+        for (var i = 0, n = keys.length; i < n; i++) {
+            var key = keys[i];
+            returnType.metadata[key] = Reflect.getMetadata(key, classPrototype);
+        }
+    }
     function reflect(classRef, recursive) {
         var classPrototype = classRef.prototype;
         var returnType = reflectPrototype(classPrototype, recursive);
         addMemberInfo(returnType, classRef, false, true);
+        addClassMeta(classPrototype, returnType);
         return returnType;
     }
     op.reflect = reflect;
@@ -221,6 +231,8 @@ var op;
         return returnStr;
     }
     function generateMethodList(typ) {
+        if (!typ.methods)
+            return '';
         return typ.methods.map(function (method) { return generateMethod(method); }).join('');
     }
     function generatePropertyList(typ) {
@@ -245,11 +257,18 @@ var op;
     function generateInterfaces(rootNamespace, namespaceName) {
         var returnStrArr = [("module " + namespaceName + "{")];
         for (var key in rootNamespace) {
-            if (typeof rootNamespace[key] === 'function') {
+            var member = rootNamespace[key];
+            if (typeof member === 'function') {
+                var typeInfo = reflect(member);
+                if (typeInfo.metadata && typeInfo.metadata[op_autoGenInterface]) {
+                    returnStrArr.push(generateInterface(member));
+                }
             }
         }
         returnStrArr.push('}');
-        return returnStrArr.join('\n\r');
+        var returnStr = returnStrArr.join('\n\r');
+        debugger;
+        return returnStr;
     }
     op.generateInterfaces = generateInterfaces;
     function getPropertyDescriptor(classPrototype, memberKey) {
@@ -375,5 +394,12 @@ var op;
         };
     }
     op.reflectionType = reflectionType;
+    function autoGen(description) {
+        return function (classRef) {
+            Reflect.defineMetadata(op_description, description, classRef.prototype);
+            Reflect.defineMetadata(op_autoGenInterface, true, classRef.prototype);
+        };
+    }
+    op.autoGen = autoGen;
 })(op || (op = {}));
 //# sourceMappingURL=@op.js.map

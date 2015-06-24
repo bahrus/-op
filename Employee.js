@@ -117,6 +117,10 @@ var Examples;
             }), 
             __metadata('design:type', Address)
         ], Employee, "defaultAddress");
+        Employee = __decorate([
+            op.autoGen("Information about an employee"), 
+            __metadata('design:paramtypes', [])
+        ], Employee);
         return Employee;
     })();
     Examples.Employee = Employee;
