@@ -21,7 +21,6 @@ if (typeof __param !== "function") __param = function (paramIndex, decorator) {
 };
 var Examples;
 (function (Examples) {
-    //@op.initializer(Address.New2)
     var Address = (function () {
         function Address() {
         }
@@ -35,6 +34,7 @@ var Examples;
         ], Address.prototype, "ZipCode");
         return Address;
     })();
+    Examples.Address = Address;
     var EmployeeImpl = (function () {
         function EmployeeImpl() {
         }
@@ -183,6 +183,7 @@ var Examples;
     console.log(op.reflect(EmployeeView, true));
     console.log('generate interface =>');
     console.log(op.generateInterface(Employee));
+    console.log(op.generateInterfaces(Examples, 'Examples'));
     var ev = new EmployeeView();
     ev.MiddleName = 'myMiddleName';
     //const evPropIDLookup = Reflect.getMetadata(op.tsp_propIDLookup, ev);

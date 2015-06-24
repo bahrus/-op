@@ -208,7 +208,7 @@ var op;
             args = method.args.map(function (arg) { return arg.name + ': ' +
                 getTypeString(arg.argumentTypeClassRef); }).join(', ');
             method.args.forEach(function (arg) {
-                jsDocParams += memberIndent + " * @param {" + getTypeString(arg.argumentTypeClassRef) + "}\n\r";
+                jsDocParams += memberIndent + " * @param {" + getTypeString(arg.argumentTypeClassRef) + "} " + arg.name + "\n\r";
             });
         }
         var returnStr = memberIndent + "/**\n\r";
@@ -242,6 +242,16 @@ var op;
         return interfaceString;
     }
     op.generateInterface = generateInterface;
+    function generateInterfaces(rootNamespace, namespaceName) {
+        var returnStrArr = [("module " + namespaceName + "{")];
+        for (var key in rootNamespace) {
+            if (typeof rootNamespace[key] === 'function') {
+            }
+        }
+        returnStrArr.push('}');
+        return returnStrArr.join('\n\r');
+    }
+    op.generateInterfaces = generateInterfaces;
     function getPropertyDescriptor(classPrototype, memberKey) {
         while (classPrototype) {
             var propertyDescriptor = Object.getOwnPropertyDescriptor(classPrototype, memberKey);

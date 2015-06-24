@@ -231,7 +231,7 @@ module op{
 			args = method.args.map(arg => arg.name + ': ' + 
 			getTypeString(arg.argumentTypeClassRef)).join(', ');
 			method.args.forEach(arg =>{
-				jsDocParams += `${memberIndent} * @param {${getTypeString(arg.argumentTypeClassRef)}}\n\r`
+				jsDocParams += `${memberIndent} * @param {${getTypeString(arg.argumentTypeClassRef)}} ${arg.name}\n\r`
 			});
 		}
 		let returnStr = `${memberIndent}/**\n\r`;
@@ -275,6 +275,17 @@ ${
 }
 `;
 		return interfaceString;
+	}
+	
+	export function generateInterfaces(rootNamespace: Object, namespaceName: string){
+		let returnStrArr = [`module ${namespaceName}{`];
+		for(var key in rootNamespace){
+			if (typeof rootNamespace[key] === 'function'){
+				
+			}
+		}
+		returnStrArr.push('}');
+		return returnStrArr.join('\n\r');
 	}
 	
 	function getPropertyDescriptor(classPrototype: any, memberKey: string){
@@ -407,5 +418,6 @@ ${
 			Reflect.defineMetadata(designTypeMetaKey, typealias, classPrototype, fieldName);
 		}
 	}
+	
 	
 }
