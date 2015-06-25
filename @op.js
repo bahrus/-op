@@ -250,6 +250,7 @@ var op;
     }
     function generateInterface(classRef) {
         var reflectedClass = reflect(classRef, false);
+        var factoryString = "\nexport class " + reflectedClass.name + "Factory{\n\tpublic static get instance(){\n\t\treturn new " + reflectedClass.name + "();\n\t}\n}\n";
         var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + generatePropertyList(reflectedClass) + "\n" + generateMethodList(reflectedClass) + "\n}\n";
         return interfaceString;
     }
@@ -267,7 +268,6 @@ var op;
         }
         returnStrArr.push('}');
         var returnStr = returnStrArr.join('\n\r');
-        debugger;
         return returnStr;
     }
     op.generateInterfaces = generateInterfaces;
@@ -311,6 +311,10 @@ var op;
                     var methodInfo = createNew(MethodInfo, memberInfo);
                     var methodSignature = propertyDescriptor.value.toString();
                     var signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
+                    if (!signatureInsideParenthesis) {
+                        console.log('TODO: handle this scenario');
+                        continue;
+                    }
                     var paramNames = signatureInsideParenthesis.split(',');
                     if (memberInfo.metadata) {
                         var paramTypes = memberInfo.metadata['design:paramtypes'];
@@ -373,17 +377,18 @@ var op;
         addMemberInfo(returnType, classPrototype, true, recursive);
         return returnType;
     }
-    // export function initializer(classInitFn: Function){
-    // 	return function(target: Function){
-    // 		//debugger;
-    // 	}
-    // }
     function createNew(classRef, obj) {
         var implObj = new classRef();
         Object['assign'](implObj, obj);
         return implObj;
     }
     op.createNew = createNew;
+    function assign() {
+        var inew = this;
+        Object['assign'](inew.target, inew.source);
+        return inew.target;
+    }
+    op.assign = assign;
     function reflectionType(typealias) {
         return function (classPrototype, fieldName) {
             var propertyDescriptor = getPropertyDescriptor(classPrototype, fieldName);

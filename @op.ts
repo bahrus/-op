@@ -276,6 +276,13 @@ module op{
 		
 	export function generateInterface(classRef : Function){
 		const reflectedClass = reflect(classRef, false);
+		const factoryString = `
+export class ${reflectedClass.name}Factory{
+	public static get instance(){
+		return new ${reflectedClass.name}();
+	}
+}
+`;
 		const interfaceString = `
 export interface I${reflectedClass.name}{
 ${
@@ -288,6 +295,8 @@ ${
 `;
 		return interfaceString;
 	}
+	
+	
 	
 	export function generateInterfaces(rootNamespace: Object, namespaceName: string){
 		let returnStrArr = [`module ${namespaceName}{`];
@@ -303,7 +312,6 @@ ${
 		}
 		returnStrArr.push('}');
 		const returnStr = returnStrArr.join('\n\r');
-		debugger;
 		return returnStr;
 	}
 	
@@ -346,6 +354,10 @@ ${
 					const methodInfo = createNew<MethodInfo, IMemberInfo>(MethodInfo, memberInfo);
 					const methodSignature = propertyDescriptor.value.toString();
 					const signatureInsideParenthesis = substring_between(methodSignature, '(', ')');
+					if(!signatureInsideParenthesis){
+						console.log('TODO: handle this scenario');
+						continue;
+					}
 					const paramNames = signatureInsideParenthesis.split(',');
 					if(memberInfo.metadata){
 						const paramTypes = memberInfo.metadata['design:paramtypes'];
@@ -416,16 +428,23 @@ ${
 		return returnType;
 	}
 	
-	// export function initializer(classInitFn: Function){
-	// 	return function(target: Function){
-	// 		//debugger;
-	// 	}
-	// }
 	
 	export function createNew<InterfaceImplementorType, InterfaceType>(classRef: Function, obj: InterfaceType ){
 		const implObj = new (<any>classRef)();
 		Object['assign'](implObj, obj);
 		return <InterfaceImplementorType> implObj;
+	}
+	
+	export interface IAssignAction<TTarget, TSource>{
+		do?: () => TTarget;
+		target?: TTarget,
+		source?: TSource;
+	}
+	
+	export function assign<TImpl, TBase>(){
+		const inew = <IAssignAction<TImpl, TBase>> this;
+		Object['assign'] (inew.target, inew.source);
+		return inew.target;
 	}
 	
 	export function reflectionType(typealias: Function){

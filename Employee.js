@@ -40,6 +40,19 @@ var Examples;
         }
         return EmployeeImpl;
     })();
+    var EmployeeFactory = (function () {
+        function EmployeeFactory() {
+        }
+        Object.defineProperty(EmployeeFactory, "instance", {
+            get: function () {
+                return new Employee();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return EmployeeFactory;
+    })();
+    Examples.EmployeeFactory = EmployeeFactory;
     var Employee = (function () {
         function Employee() {
         }
@@ -124,6 +137,13 @@ var Examples;
         return Employee;
     })();
     Examples.Employee = Employee;
+    // Object.defineProperty(Employee, 'instance', {
+    //   get: () =>{
+    // 	  return new Employee();
+    //   },
+    //   enumerable: true,
+    //   configurable: true
+    // });
     console.log('reflect Employee => ');
     console.log(op.reflect(Employee, true));
     var ColumnDef = 'ColumnDef';
@@ -190,28 +210,7 @@ var Examples;
     console.log(op.generateInterfaces(Examples, 'Examples'));
     var ev = new EmployeeView();
     ev.MiddleName = 'myMiddleName';
-    //const evPropIDLookup = Reflect.getMetadata(op.tsp_propIDLookup, ev);
-    //console.log('evPropIDLookup = ');
-    //console.log(evPropIDLookup);
     var ev1 = new EmployeeView();
-    // const uBound = 1000000;
-    // const t1 = new Date();
-    // for(let i = 0; i < uBound; i++){
-    // 	ev1.Surname = 'name_' + i;
-    // }
-    // const t2 = new Date();
-    // for(let i = 0; i < uBound; i++){
-    // 	ev1.FirstName = 'name_' + i;
-    // }
-    // const t3 = new Date();
-    // for(let i = 0; i < uBound; i++){
-    // 	ev1.MiddleName = 'name_' + i;
-    // }
-    // const t4 = new Date();
-    // console.log('dynamic property: ' + (t2.getTime() - t1.getTime()));
-    // console.log('static property ' + (t3.getTime() - t2.getTime()));
-    // console.log('static field ' + (t4.getTime() - t3.getTime()));
-    //op.describe(ev);
     var person1 = op.createNew(Employee, {
         FirstName: 'Bruce',
         MiddleName: 'B',
@@ -225,5 +224,14 @@ var Examples;
     person1.Surname = 'Bruce';
     console.log(person1.Surname);
     ev1.MiddleName = 'test';
+    var newEmployee = {
+        do: op.assign,
+        source: {
+            FirstName: 'George',
+            MiddleName: 'Carl',
+        },
+        target: EmployeeFactory.instance,
+    };
+    console.log(newEmployee.do().FirstName);
 })(Examples || (Examples = {}));
 //# sourceMappingURL=Employee.js.map
