@@ -1,4 +1,7 @@
+///<reference path='Scripts/typings/node/node.d.ts'/>
 ///<reference path='@op.ts'/>
+///<reference path='@op.InterfaceGenerators.ts'/>
+///<reference path='@op.JsonReflector.ts'/>
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -13,9 +16,6 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
-if (typeof __metadata !== "function") __metadata = function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 if (typeof __param !== "function") __param = function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
@@ -25,12 +25,10 @@ var Examples;
         function Address() {
         }
         __decorate([
-            op.toProp(), 
-            __metadata('design:type', String)
+            op.toProp()
         ], Address.prototype, "Street");
         __decorate([
-            op.toProp(), 
-            __metadata('design:type', String)
+            op.toProp()
         ], Address.prototype, "ZipCode");
         return Address;
     })();
@@ -79,13 +77,11 @@ var Examples;
         };
         Object.defineProperty(Employee.prototype, "Surname",
             __decorate([
-                op.initProp(), 
-                __metadata('design:type', String)
+                op.initProp()
             ], Employee.prototype, "Surname", Object.getOwnPropertyDescriptor(Employee.prototype, "Surname")));
         Object.defineProperty(Employee.prototype, "FirstName",
             __decorate([
-                op.initProp(), 
-                __metadata('design:type', String)
+                op.initProp()
             ], Employee.prototype, "FirstName", Object.getOwnPropertyDescriptor(Employee.prototype, "FirstName")));
         __decorate([
             op.plopIntoMeta({
@@ -93,12 +89,10 @@ var Examples;
                     hide: true,
                 }
             }),
-            op.description("Middle Name of Employee"), 
-            __metadata('design:type', String)
+            op.description("Middle Name of Employee")
         ], Employee.prototype, "MiddleName");
         __decorate([
-            op.toProp(), 
-            __metadata('design:type', Address)
+            op.toProp()
         ], Employee.prototype, "HomeAddress");
         Object.defineProperty(Employee.prototype, "DriveHome",
             __decorate([
@@ -106,33 +100,24 @@ var Examples;
                     ColumnDef: {
                         hide: true,
                     }
-                }), 
-                __metadata('design:type', Function), 
-                __metadata('design:paramtypes', []), 
-                __metadata('design:returntype', void 0)
+                })
             ], Employee.prototype, "DriveHome", Object.getOwnPropertyDescriptor(Employee.prototype, "DriveHome")));
         __decorate([
-            op.reflectionType(Address), 
-            __metadata('design:type', Object)
+            op.reflectionType(Address)
         ], Employee.prototype, "TempAddress");
         Object.defineProperty(Employee.prototype, "findLocation",
             __decorate([
-                __param(0, op._), 
-                __metadata('design:type', Function), 
-                __metadata('design:paramtypes', [Employee, String]), 
-                __metadata('design:returntype', Boolean)
+                __param(0, op._)
             ], Employee.prototype, "findLocation", Object.getOwnPropertyDescriptor(Employee.prototype, "findLocation")));
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {
                     hide: true,
                 }
-            }), 
-            __metadata('design:type', Address)
+            })
         ], Employee, "defaultAddress");
         Employee = __decorate([
-            op.autoGen("Information about an employee"), 
-            __metadata('design:paramtypes', [])
+            op.autoGen("Information about an employee")
         ], Employee);
         return Employee;
     })();
@@ -165,8 +150,7 @@ var Examples;
                 Constraints: {
                     maxLength: 200
                 }
-            }), 
-            __metadata('design:type', String)
+            })
         ], AddressView.prototype, "street");
         return AddressView;
     })(Address);
@@ -186,20 +170,17 @@ var Examples;
                     width: 200,
                 }
             }),
-            op.metaPlopper(setTitleToFieldNameUC), 
-            __metadata('design:type', String)
+            op.metaPlopper(setTitleToFieldNameUC)
         ], EmployeeView.prototype, "MiddleName");
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {
                     width: 100,
                 }
-            }), 
-            __metadata('design:type', String)
+            })
         ], EmployeeView.prototype, "Surname");
         __decorate([
-            op.toProp(), 
-            __metadata('design:type', AddressView)
+            op.toProp()
         ], EmployeeView.prototype, "HomeAddress");
         return EmployeeView;
     })(Employee);
@@ -233,5 +214,6 @@ var Examples;
         target: EmployeeFactory.instance,
     };
     console.log(newEmployee.do().FirstName);
+    console.log(op.generateReflectionJSON(Employee, 'obj'));
 })(Examples || (Examples = {}));
 //# sourceMappingURL=Employee.js.map

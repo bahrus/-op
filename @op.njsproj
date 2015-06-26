@@ -36,9 +36,12 @@
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="%40op.InterfaceGenerators.ts" />
+    <TypeScriptCompile Include="%40op.JsonReflector.ts" />
+    <TypeScriptCompile Include="%40op.ts" />
     <TypeScriptCompile Include="app.ts" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <TypeScriptCompile Include="Employee.ts" />
     <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
   </ItemGroup>
   <ItemGroup>

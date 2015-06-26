@@ -1,6 +1,7 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
 ///<reference path='@op.ts'/>
-
+///<reference path='@op.InterfaceGenerators.ts'/>
+///<reference path='@op.JsonReflector.ts'/>
 
 
 module Examples{
@@ -217,7 +218,7 @@ module Examples{
 	
 	console.log(newEmployee.do().FirstName);
 	
-	
+    console.log(op.generateReflectionJSON(Employee, 'obj'));
 	
 }
 
