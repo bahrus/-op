@@ -10,6 +10,7 @@ var op;
                 reflectionObj.Properties[prop.name] = {
                     path: rootName + "." + prop.name,
                     type: op.getTypeString(prop.propertyTypeClassRef),
+                    metaData: prop.metadata,
                 };
             });
         }

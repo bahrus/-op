@@ -9,6 +9,7 @@ module op {
                 reflectionObj.Properties[prop.name] = {
                     path: `${rootName}.${prop.name}`,
                     type: op.getTypeString(prop.propertyTypeClassRef),
+                    metaData: prop.metadata,
                 };
             });
         }
@@ -22,6 +23,6 @@ module op {
     export interface IPropertyObject {
         path: string;
         type: string;
-
+        metaData : object;    
     }
 }
