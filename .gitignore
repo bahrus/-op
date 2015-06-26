@@ -2,3 +2,4 @@
 /logs/*.pid
 /*.map
 *.map
+*.suo

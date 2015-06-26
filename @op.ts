@@ -33,7 +33,6 @@ if (!Object['assign']) {
     }
   });
 }
-
 // interface Object{
 // 	assign: (targetObj: Object, sourceObj: Object) => Object;
 // }
@@ -43,8 +42,8 @@ if (!Object['assign']) {
 module op{
 	
 	const designTypeMetaKey = 'design:type';
-	const op_description = '@op:description';
-	const op_autoGenInterface = '@op.autoGenInterface';
+	export const op_description = '@op:description';
+	
 	
 	export const getter = function(ID: string){
 		return function(){
@@ -220,100 +219,20 @@ module op{
 	
 	
 	
-	function getPropertyType(prop: IPropertyInfo){
+	export function getPropertyType(prop: IPropertyInfo){
 		if(!prop.metadata) return 'unknownType';
 		const designType = prop.metadata[designTypeMetaKey];
 		if(!designType) return 'unknownType';
 		return getTypeString(designType); 
 	}
 	
-	function getTypeString(classRef: Function){
+	export function getTypeString(classRef: Function){
 		const prototypeName = classRef.toString().replace('function ', '');
 		const iPosOfParenthesis = prototypeName.indexOf('(');
 		return prototypeName.substring(0, iPosOfParenthesis);
 	}
 	
-	const memberIndent = '   ';
 	
-	function generateMethod(method: IMethodInfo){
-		let args = '';
-		let jsDocParams = '';
-		if(method.args){
-			args = method.args.map(arg => arg.name + ': ' + 
-			getTypeString(arg.argumentTypeClassRef)).join(', ');
-			method.args.forEach(arg =>{
-				jsDocParams += `${memberIndent} * @param {${getTypeString(arg.argumentTypeClassRef)}} ${arg.name}\n\r`
-			});
-		}
-		let returnStr = `${memberIndent}/**\n\r`;
-		if(method.metadata[op_description]){
-			returnStr += `${memberIndent}* ${method.metadata[op_description]}\n\r`;
-		}
-		returnStr += jsDocParams;
-		returnStr += `${memberIndent}*/\n\r`;
-		returnStr +=  `${memberIndent}${method.name}(${args});\n\r`;
-		return returnStr;
-	}
-	
-	function generateMethodList(typ: IType) : string {
-		if(!typ.methods) return '';
-		return typ.methods.map(method => generateMethod(method)).join('');
-	}
-	
-	function generatePropertyList(typ: IType) : string{
-		const returnStr = typ.properties.map(prop =>{
-			let returnStr = '';
-			if(prop.metadata[op_description]){
-				returnStr += `${memberIndent}/**\n\r`;
-				returnStr += `${memberIndent}* ${prop.metadata[op_description]}\n\r`;
-				returnStr += `${memberIndent}*/\n\r`;
-			}
-			returnStr += `${memberIndent}${prop.name} : ${getPropertyType(prop)};`;
-			return  returnStr;
-		}).join('\n\r');
-		return returnStr;
-	}
-		
-	export function generateInterface(classRef : Function){
-		const reflectedClass = reflect(classRef, false);
-		const factoryString = `
-export class ${reflectedClass.name}Factory{
-	public static get instance(){
-		return new ${reflectedClass.name}();
-	}
-}
-`;
-		const interfaceString = `
-export interface I${reflectedClass.name}{
-${
-	generatePropertyList(reflectedClass)
-}
-${
-	generateMethodList(reflectedClass)
-}
-}
-`;
-		return interfaceString;
-	}
-	
-	
-	
-	export function generateInterfaces(rootNamespace: Object, namespaceName: string){
-		let returnStrArr = [`module ${namespaceName}{`];
-		for(var key in rootNamespace){
-			const member = rootNamespace[key];
-			if (typeof member === 'function'){
-				const typeInfo = reflect(member);
-				if(typeInfo.metadata && typeInfo.metadata[op_autoGenInterface]){
-					returnStrArr.push(generateInterface(member));
-				}
-				
-			}
-		}
-		returnStrArr.push('}');
-		const returnStr = returnStrArr.join('\n\r');
-		return returnStr;
-	}
 	
 	function getPropertyDescriptor(classPrototype: any, memberKey: string){
 		while(classPrototype){
@@ -457,11 +376,6 @@ ${
 		}
 	}
 	
-	export function autoGen(description: string){
-		return (classRef: Function) => {
-			Reflect.defineMetadata(op_description, description, classRef.prototype);
-			Reflect.defineMetadata(op_autoGenInterface, true, classRef.prototype);
-		}
-	}
+	
 	
 }

@@ -36,8 +36,7 @@ if (!Object['assign']) {
 var op;
 (function (op) {
     var designTypeMetaKey = 'design:type';
-    var op_description = '@op:description';
-    var op_autoGenInterface = '@op.autoGenInterface';
+    op.op_description = '@op:description';
     op.getter = function (ID) {
         return function () {
             var lu = this['__@op'];
@@ -118,7 +117,7 @@ var op;
     function description(value) {
         return function (classPrototype, fieldName) {
             var desc = (_a = {},
-                _a[op_description] = value,
+                _a[op.op_description] = value,
                 _a
             );
             plopIntoPropMeta(desc, classPrototype, fieldName);
@@ -205,72 +204,13 @@ var op;
             return 'unknownType';
         return getTypeString(designType);
     }
+    op.getPropertyType = getPropertyType;
     function getTypeString(classRef) {
         var prototypeName = classRef.toString().replace('function ', '');
         var iPosOfParenthesis = prototypeName.indexOf('(');
         return prototypeName.substring(0, iPosOfParenthesis);
     }
-    var memberIndent = '   ';
-    function generateMethod(method) {
-        var args = '';
-        var jsDocParams = '';
-        if (method.args) {
-            args = method.args.map(function (arg) { return arg.name + ': ' +
-                getTypeString(arg.argumentTypeClassRef); }).join(', ');
-            method.args.forEach(function (arg) {
-                jsDocParams += memberIndent + " * @param {" + getTypeString(arg.argumentTypeClassRef) + "} " + arg.name + "\n\r";
-            });
-        }
-        var returnStr = memberIndent + "/**\n\r";
-        if (method.metadata[op_description]) {
-            returnStr += memberIndent + "* " + method.metadata[op_description] + "\n\r";
-        }
-        returnStr += jsDocParams;
-        returnStr += memberIndent + "*/\n\r";
-        returnStr += "" + memberIndent + method.name + "(" + args + ");\n\r";
-        return returnStr;
-    }
-    function generateMethodList(typ) {
-        if (!typ.methods)
-            return '';
-        return typ.methods.map(function (method) { return generateMethod(method); }).join('');
-    }
-    function generatePropertyList(typ) {
-        var returnStr = typ.properties.map(function (prop) {
-            var returnStr = '';
-            if (prop.metadata[op_description]) {
-                returnStr += memberIndent + "/**\n\r";
-                returnStr += memberIndent + "* " + prop.metadata[op_description] + "\n\r";
-                returnStr += memberIndent + "*/\n\r";
-            }
-            returnStr += "" + memberIndent + prop.name + " : " + getPropertyType(prop) + ";";
-            return returnStr;
-        }).join('\n\r');
-        return returnStr;
-    }
-    function generateInterface(classRef) {
-        var reflectedClass = reflect(classRef, false);
-        var factoryString = "\nexport class " + reflectedClass.name + "Factory{\n\tpublic static get instance(){\n\t\treturn new " + reflectedClass.name + "();\n\t}\n}\n";
-        var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + generatePropertyList(reflectedClass) + "\n" + generateMethodList(reflectedClass) + "\n}\n";
-        return interfaceString;
-    }
-    op.generateInterface = generateInterface;
-    function generateInterfaces(rootNamespace, namespaceName) {
-        var returnStrArr = [("module " + namespaceName + "{")];
-        for (var key in rootNamespace) {
-            var member = rootNamespace[key];
-            if (typeof member === 'function') {
-                var typeInfo = reflect(member);
-                if (typeInfo.metadata && typeInfo.metadata[op_autoGenInterface]) {
-                    returnStrArr.push(generateInterface(member));
-                }
-            }
-        }
-        returnStrArr.push('}');
-        var returnStr = returnStrArr.join('\n\r');
-        return returnStr;
-    }
-    op.generateInterfaces = generateInterfaces;
+    op.getTypeString = getTypeString;
     function getPropertyDescriptor(classPrototype, memberKey) {
         while (classPrototype) {
             var propertyDescriptor = Object.getOwnPropertyDescriptor(classPrototype, memberKey);
@@ -399,12 +339,5 @@ var op;
         };
     }
     op.reflectionType = reflectionType;
-    function autoGen(description) {
-        return function (classRef) {
-            Reflect.defineMetadata(op_description, description, classRef.prototype);
-            Reflect.defineMetadata(op_autoGenInterface, true, classRef.prototype);
-        };
-    }
-    op.autoGen = autoGen;
 })(op || (op = {}));
 //# sourceMappingURL=@op.js.map
