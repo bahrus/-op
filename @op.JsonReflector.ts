@@ -1,12 +1,14 @@
-﻿module op {
+﻿///<reference path='@op.ts'/>
+module op {
     export function generateReflectionJSON(classRef: Function, rootName: string) {
         const reflectedClass = op.reflect(classRef, true);
         const reflectionObj: IReflectionObject = {};
         if (reflectedClass.properties) {
+            reflectionObj.Properties = {};
             reflectedClass.properties.forEach(prop => {
                 reflectionObj.Properties[prop.name] = {
                     path: `${rootName}.${prop.name}`,
-                    type: op.getPropertyType(prop.propertyType),
+                    type: op.getTypeString(prop.propertyTypeClassRef),
                 };
             });
         }

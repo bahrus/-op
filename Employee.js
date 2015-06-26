@@ -16,6 +16,9 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
+if (typeof __metadata !== "function") __metadata = function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 if (typeof __param !== "function") __param = function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
@@ -25,10 +28,12 @@ var Examples;
         function Address() {
         }
         __decorate([
-            op.toProp()
+            op.toProp(), 
+            __metadata('design:type', String)
         ], Address.prototype, "Street");
         __decorate([
-            op.toProp()
+            op.toProp(), 
+            __metadata('design:type', String)
         ], Address.prototype, "ZipCode");
         return Address;
     })();
@@ -77,11 +82,13 @@ var Examples;
         };
         Object.defineProperty(Employee.prototype, "Surname",
             __decorate([
-                op.initProp()
+                op.initProp(), 
+                __metadata('design:type', String)
             ], Employee.prototype, "Surname", Object.getOwnPropertyDescriptor(Employee.prototype, "Surname")));
         Object.defineProperty(Employee.prototype, "FirstName",
             __decorate([
-                op.initProp()
+                op.initProp(), 
+                __metadata('design:type', String)
             ], Employee.prototype, "FirstName", Object.getOwnPropertyDescriptor(Employee.prototype, "FirstName")));
         __decorate([
             op.plopIntoMeta({
@@ -89,10 +96,12 @@ var Examples;
                     hide: true,
                 }
             }),
-            op.description("Middle Name of Employee")
+            op.description("Middle Name of Employee"), 
+            __metadata('design:type', String)
         ], Employee.prototype, "MiddleName");
         __decorate([
-            op.toProp()
+            op.toProp(), 
+            __metadata('design:type', Address)
         ], Employee.prototype, "HomeAddress");
         Object.defineProperty(Employee.prototype, "DriveHome",
             __decorate([
@@ -100,24 +109,33 @@ var Examples;
                     ColumnDef: {
                         hide: true,
                     }
-                })
+                }), 
+                __metadata('design:type', Function), 
+                __metadata('design:paramtypes', []), 
+                __metadata('design:returntype', void 0)
             ], Employee.prototype, "DriveHome", Object.getOwnPropertyDescriptor(Employee.prototype, "DriveHome")));
         __decorate([
-            op.reflectionType(Address)
+            op.reflectionType(Address), 
+            __metadata('design:type', Object)
         ], Employee.prototype, "TempAddress");
         Object.defineProperty(Employee.prototype, "findLocation",
             __decorate([
-                __param(0, op._)
+                __param(0, op._), 
+                __metadata('design:type', Function), 
+                __metadata('design:paramtypes', [Employee, String]), 
+                __metadata('design:returntype', Boolean)
             ], Employee.prototype, "findLocation", Object.getOwnPropertyDescriptor(Employee.prototype, "findLocation")));
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {
                     hide: true,
                 }
-            })
+            }), 
+            __metadata('design:type', Address)
         ], Employee, "defaultAddress");
         Employee = __decorate([
-            op.autoGen("Information about an employee")
+            op.autoGen("Information about an employee"), 
+            __metadata('design:paramtypes', [])
         ], Employee);
         return Employee;
     })();
@@ -150,7 +168,8 @@ var Examples;
                 Constraints: {
                     maxLength: 200
                 }
-            })
+            }), 
+            __metadata('design:type', String)
         ], AddressView.prototype, "street");
         return AddressView;
     })(Address);
@@ -170,17 +189,20 @@ var Examples;
                     width: 200,
                 }
             }),
-            op.metaPlopper(setTitleToFieldNameUC)
+            op.metaPlopper(setTitleToFieldNameUC), 
+            __metadata('design:type', String)
         ], EmployeeView.prototype, "MiddleName");
         __decorate([
             op.plopIntoMeta({
                 ColumnDef: {
                     width: 100,
                 }
-            })
+            }), 
+            __metadata('design:type', String)
         ], EmployeeView.prototype, "Surname");
         __decorate([
-            op.toProp()
+            op.toProp(), 
+            __metadata('design:type', AddressView)
         ], EmployeeView.prototype, "HomeAddress");
         return EmployeeView;
     })(Employee);
