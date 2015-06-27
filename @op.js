@@ -1,4 +1,5 @@
 ///<reference path='reflect-metadata.d.ts'/>
+///<reference path='Scripts/typings/node/node.d.ts'/>
 if (!Object['assign']) {
     //from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     Object.defineProperty(Object, 'assign', {
@@ -339,5 +340,21 @@ var op;
         };
     }
     op.reflectionType = reflectionType;
+    // hook global Reflect
+    (function (__global) {
+        if (typeof __global.op !== "undefined") {
+            if (__global.op !== op) {
+                for (var p in op) {
+                    __global.op[p] = op[p];
+                }
+            }
+        }
+        else {
+            __global.op = op;
+        }
+    })(typeof window !== "undefined" ? window :
+        typeof WorkerGlobalScope !== "undefined" ? self :
+            typeof global !== "undefined" ? global :
+                Function("return this;")());
 })(op || (op = {}));
 //# sourceMappingURL=@op.js.map

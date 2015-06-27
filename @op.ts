@@ -1,4 +1,5 @@
 ///<reference path='reflect-metadata.d.ts'/>
+///<reference path='Scripts/typings/node/node.d.ts'/>
 
 if (!Object['assign']) {
 	//from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -40,6 +41,8 @@ if (!Object['assign']) {
 
 
 module op{
+	
+	declare var WorkerGlobalScope: any;
 	
 	const designTypeMetaKey = 'design:type';
 	export const op_description = '@op:description';
@@ -376,6 +379,22 @@ module op{
 		}
 	}
 	
-	
+	    // hook global Reflect
+    (function(__global: any) {
+        if (typeof __global.op !== "undefined") {
+            if (__global.op !== op) {
+                for (var p in op) {
+                    __global.op[p] = (<any>op)[p];
+                }
+            }
+        }
+        else {
+            __global.op = op;
+        }
+    })(
+        typeof window !== "undefined" ? window :
+            typeof WorkerGlobalScope !== "undefined" ? self :
+                typeof global !== "undefined" ? global :
+                    Function("return this;")());
 	
 }

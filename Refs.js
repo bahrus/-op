@@ -1,10 +1,7 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
-///<reference path='Reflect-metadata.d.ts'/>
 if (typeof (global) !== 'undefined') {
     require('./Reflect');
-    console.log(Reflect);
-    console.log(Reflect.defineMetadata);
-    //global.Reflect = Reflect;
+    require('./@op');
     var guid = '@op-81B44259-976C-4DFC-BE00-6E901415FEF3';
     var globalNS = global[guid] || 'op';
     if (!global.refs) {
