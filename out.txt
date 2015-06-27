@@ -1,0 +1,74 @@
+reflect Employee => 
+TODO: handle this scenario
+{ name: 'Employee',
+  properties: 
+   [ { name: 'Surname',
+       propertyTypeClassRef: [Function: String],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'FirstName',
+       propertyTypeClassRef: [Function: String],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'MiddleName',
+       propertyTypeClassRef: [Function: String],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'HomeAddress',
+       propertyTypeClassRef: [Function: Address],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'TempAddress',
+       propertyTypeClassRef: [Function: Address],
+       propertyDescriptor: [Object],
+       metadata: [Object] } ],
+  methods: 
+   [ { name: 'findLocation',
+       args: [Object],
+       returnTypeClassRef: [Function: Boolean],
+       propertyDescriptor: [Object],
+       metadata: [Object] } ],
+  staticProperties: 
+   [ { name: 'defaultAddress',
+       propertyTypeClassRef: [Function: Address],
+       propertyDescriptor: [Object],
+       metadata: [Object] } ],
+  metadata: 
+   { undefined: 'Information about an employee',
+     '@op.autoGenInterface': true } }
+Hello world 3
+reflect on EmployeeView =>
+TODO: handle this scenario
+TODO: handle this scenario
+{ name: 'EmployeeView',
+  properties: 
+   [ { name: 'HomeAddress',
+       propertyTypeClassRef: [Function: AddressView],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'Surname',
+       propertyTypeClassRef: [Function: String],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'FirstName',
+       propertyTypeClassRef: [Function: String],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'MiddleName',
+       propertyTypeClassRef: [Function: String],
+       propertyDescriptor: [Object],
+       metadata: [Object] },
+     { name: 'TempAddress',
+       propertyTypeClassRef: [Function: Address],
+       propertyDescriptor: [Object],
+       metadata: [Object] } ],
+  methods: 
+   [ { name: 'findLocation',
+       args: [Object],
+       returnTypeClassRef: [Function: Boolean],
+       propertyDescriptor: [Object],
+       metadata: [Object] } ],
+  metadata: 
+   { undefined: 'Information about an employee',
+     '@op.autoGenInterface': true } }
+generate interface =>

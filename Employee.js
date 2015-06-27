@@ -1,6 +1,6 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
 ///<reference path='@op.ts'/>
-///<reference path='@op.InterfaceGenerators.ts'/>
+///<reference path='InterfaceGenerator.ts'/>
 ///<reference path='@op.JsonReflector.ts'/>
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -134,7 +134,7 @@ var Examples;
             __metadata('design:type', Address)
         ], Employee, "defaultAddress");
         Employee = __decorate([
-            op.autoGen("Information about an employee"), 
+            InterfaceGenerator.autoGen("Information about an employee"), 
             __metadata('design:paramtypes', [])
         ], Employee);
         return Employee;

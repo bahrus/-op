@@ -5,6 +5,6 @@
 		"sourceMap": true
 	},
 	"files": [
-    	"Refs.ts", "@op.ts", "@op.InterfaceGenerators.ts", "@op.JsonReflector", "Employee.ts", "app.ts"
+    	"Refs.ts", "@op.ts", "InterfaceGenerators.ts", "@op.JsonReflector", "Employee.ts", "app.ts"
   	]
 }

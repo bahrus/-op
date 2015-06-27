@@ -1,6 +1,6 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
 ///<reference path='@op.ts'/>
-///<reference path='@op.InterfaceGenerators.ts'/>
+///<reference path='InterfaceGenerator.ts'/>
 ///<reference path='@op.JsonReflector.ts'/>
 
 
@@ -40,7 +40,7 @@ module Examples{
 		}
 	}
 	
-	@op.autoGen("Information about an employee")
+	@InterfaceGenerator.autoGen("Information about an employee")
 	export class Employee implements IEmployee{
 		
 		// public static New(employee: IEmployee){

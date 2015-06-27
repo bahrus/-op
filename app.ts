@@ -1,12 +1,12 @@
 ﻿///<reference path='reflect-metadata.d.ts'/>
 ///<reference path='@op.ts'/>
 ///<reference path='@op.JsonReflector.ts'/>
-///<reference path='@op.InterfaceGenerators.ts'/>
+///<reference path='InterfaceGenerator.ts'/>
 ///<reference path='Employee.ts'/>
 
 declare var global;
 if(typeof(global) !== 'undefined'){
-    require('./@op.InterfaceGenerators');
+    require('./InterfaceGenerator');
     require('./@op.JsonReflector');
 	require('./Employee');
 }
@@ -16,8 +16,8 @@ console.log('Hello world 3');
 console.log('reflect on EmployeeView =>');
 	console.log(op.reflect(Examples.EmployeeView, true));
 	console.log('generate interface =>');
-	console.log(op.generateInterface(Examples.Employee));
-	console.log(op.generateInterfaces(Examples, 'Examples'));
+	console.log(InterfaceGenerator.generateInterface(Examples.Employee));
+	console.log(InterfaceGenerator.generateInterfaces(Examples, 'Examples'));
 	
 	var ev = new Examples.EmployeeView();
 	ev.MiddleName = 'myMiddleName';

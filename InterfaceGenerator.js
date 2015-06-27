@@ -3,8 +3,8 @@
 if (typeof (global) !== 'undefined') {
     require('./@op');
 }
-var op;
-(function (op) {
+var InterfaceGenerator;
+(function (InterfaceGenerator) {
     var memberIndent = '   ';
     var op_autoGenInterface = '@op.autoGenInterface';
     function generateMethod(method) {
@@ -45,12 +45,14 @@ var op;
         return returnStr;
     }
     function generateInterface(classRef) {
+        console.log('iah');
+        console.log(op);
         var reflectedClass = op.reflect(classRef, false);
         var factoryString = "\nexport class " + reflectedClass.name + "Factory{\n\tpublic static get instance(){\n\t\treturn new " + reflectedClass.name + "();\n\t}\n}\n";
         var interfaceString = "\nexport interface I" + reflectedClass.name + "{\n" + generatePropertyList(reflectedClass) + "\n" + generateMethodList(reflectedClass) + "\n}\n";
         return interfaceString;
     }
-    op.generateInterface = generateInterface;
+    InterfaceGenerator.generateInterface = generateInterface;
     function generateInterfaces(rootNamespace, namespaceName) {
         var returnStrArr = [("module " + namespaceName + "{")];
         for (var key in rootNamespace) {
@@ -66,29 +68,29 @@ var op;
         var returnStr = returnStrArr.join('\n\r');
         return returnStr;
     }
-    op.generateInterfaces = generateInterfaces;
+    InterfaceGenerator.generateInterfaces = generateInterfaces;
     function autoGen(description) {
         return function (classRef) {
             Reflect.defineMetadata(op.op_description, description, classRef.prototype);
             Reflect.defineMetadata(op_autoGenInterface, true, classRef.prototype);
         };
     }
-    op.autoGen = autoGen;
+    InterfaceGenerator.autoGen = autoGen;
     // hook global op
     (function (__global) {
-        if (typeof __global.op !== "undefined") {
-            if (__global.op !== op) {
-                for (var p in op) {
-                    __global.op[p] = op[p];
+        if (typeof __global.InterfaceGenerator !== "undefined") {
+            if (__global.InterfaceGenerator !== InterfaceGenerator) {
+                for (var p in InterfaceGenerator) {
+                    __global.InterfaceGenerator[p] = InterfaceGenerator[p];
                 }
             }
         }
         else {
-            __global.op = op;
+            __global.InterfaceGenerator = InterfaceGenerator;
         }
     })(typeof window !== "undefined" ? window :
         typeof WorkerGlobalScope !== "undefined" ? self :
             typeof global !== "undefined" ? global :
                 Function("return this;")());
-})(op || (op = {}));
-//# sourceMappingURL=@op.InterfaceGenerators.js.map
+})(InterfaceGenerator || (InterfaceGenerator = {}));
+//# sourceMappingURL=InterfaceGenerator.js.map
