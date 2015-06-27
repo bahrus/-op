@@ -382,7 +382,7 @@ module op{
 		}
 	}
 	
-	    // hook global Reflect
+	// hook global op
     (function(__global: any) {
         if (typeof __global.op !== "undefined") {
             if (__global.op !== op) {

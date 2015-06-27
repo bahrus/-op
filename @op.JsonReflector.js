@@ -1,4 +1,7 @@
 ///<reference path='@op.ts'/>
+if (typeof (global) !== 'undefined') {
+    require('./@op');
+}
 var op;
 (function (op) {
     function generateReflectionJSON(classRef, rootName) {
@@ -17,5 +20,21 @@ var op;
         return JSON.stringify(reflectionObj);
     }
     op.generateReflectionJSON = generateReflectionJSON;
+    // hook global op
+    (function (__global) {
+        if (typeof __global.op !== "undefined") {
+            if (__global.op !== op) {
+                for (var p in op) {
+                    __global.op[p] = op[p];
+                }
+            }
+        }
+        else {
+            __global.op = op;
+        }
+    })(typeof window !== "undefined" ? window :
+        typeof WorkerGlobalScope !== "undefined" ? self :
+            typeof global !== "undefined" ? global :
+                Function("return this;")());
 })(op || (op = {}));
 //# sourceMappingURL=@op.JsonReflector.js.map

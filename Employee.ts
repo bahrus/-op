@@ -6,6 +6,8 @@
 
 module Examples{
 	
+	declare var WorkerGlobalScope: any;
+	
 	export interface IAddress{
 		Street?: string;
 		ZipCode?: string;
@@ -23,7 +25,7 @@ module Examples{
 	
 	
 	
-	interface IEmployee{
+	export interface IEmployee{
 		Surname?: string;
 		FirstName?: string;
 		MiddleName?: string;
@@ -142,7 +144,7 @@ module Examples{
 		}
 	}
 	
-	class AddressView extends Address implements IAddress{
+	export class AddressView extends Address implements IAddress{
 		//@op.toProp()
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
@@ -152,7 +154,7 @@ module Examples{
 		public street: string;
 	}
 	
-	class EmployeeView extends Employee implements IEmployee{
+	export class EmployeeView extends Employee implements IEmployee{
 		@op.plopIntoMeta<IConstraintCategory>({
 			Constraints:{
 				maxLength: 10
@@ -178,47 +180,23 @@ module Examples{
 		
 	}
 	
-	console.log('reflect on EmployeeView =>');
-	console.log(op.reflect(EmployeeView, true));
-	console.log('generate interface =>');
-	console.log(op.generateInterface(Employee));
-	console.log(op.generateInterfaces(Examples, 'Examples'));
-	
-	var ev = new EmployeeView();
-	ev.MiddleName = 'myMiddleName';
-
-	const ev1 = new EmployeeView();
-	
-	
-	
-	
-	const person1 = op.createNew<Employee, IEmployee>(Employee, {
-		FirstName : 'Bruce',
-		MiddleName: 'B',
-		Surname: 'Anderson',
-		HomeAddress: op.createNew<Address, IAddress>(Address, {
-			Street: '1600 Pennsylvania Ave',
-			ZipCode: '90210'	
-		}),
-	});
-	
-	console.log(person1);
-	person1.Surname = 'Bruce';
-	console.log(person1.Surname);
-	ev1.MiddleName = 'test';
-	
-	const newEmployee : op.IAssignAction<Employee, IEmployee> = {
-		do: op.assign,
-		source:{
-			FirstName: 'George',
-			MiddleName: 'Carl',
-		},
-		target: EmployeeFactory.instance,
-	};
-	
-	console.log(newEmployee.do().FirstName);
-	
-    console.log(op.generateReflectionJSON(Employee, 'obj'));
+	// hook global op
+    (function(__global: any) {
+        if (typeof __global.Examples !== "undefined") {
+            if (__global.Examples !== Examples) {
+                for (var p in Examples) {
+                    __global.Examples[p] = (<any>Examples)[p];
+                }
+            }
+        }
+        else {
+            __global.Examples = Examples;
+        }
+    })(
+        typeof window !== "undefined" ? window :
+            typeof WorkerGlobalScope !== "undefined" ? self :
+                typeof global !== "undefined" ? global :
+                    Function("return this;")());
 	
 }
 

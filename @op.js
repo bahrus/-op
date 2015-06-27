@@ -343,7 +343,7 @@ var op;
         };
     }
     op.reflectionType = reflectionType;
-    // hook global Reflect
+    // hook global op
     (function (__global) {
         if (typeof __global.op !== "undefined") {
             if (__global.op !== op) {

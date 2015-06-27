@@ -1,7 +1,12 @@
 ﻿///<reference path='reflect-metadata.d.ts'/>
 ///<reference path='@op.ts'/>
-
+if (typeof (global) !== 'undefined') {
+    require('./@op');
+}
 module op {
+    
+    declare var WorkerGlobalScope: any;
+    
     const memberIndent = '   ';
     const op_autoGenInterface = '@op.autoGenInterface';
 
@@ -91,4 +96,22 @@ ${
             Reflect.defineMetadata(op_autoGenInterface, true, classRef.prototype);
         }
     }
+    
+    // hook global op
+    (function(__global: any) {
+        if (typeof __global.op !== "undefined") {
+            if (__global.op !== op) {
+                for (var p in op) {
+                    __global.op[p] = (<any>op)[p];
+                }
+            }
+        }
+        else {
+            __global.op = op;
+        }
+    })(
+        typeof window !== "undefined" ? window :
+            typeof WorkerGlobalScope !== "undefined" ? self :
+                typeof global !== "undefined" ? global :
+                    Function("return this;")());
 }

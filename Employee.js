@@ -173,6 +173,7 @@ var Examples;
         ], AddressView.prototype, "street");
         return AddressView;
     })(Address);
+    Examples.AddressView = AddressView;
     var EmployeeView = (function (_super) {
         __extends(EmployeeView, _super);
         function EmployeeView() {
@@ -206,36 +207,22 @@ var Examples;
         ], EmployeeView.prototype, "HomeAddress");
         return EmployeeView;
     })(Employee);
-    console.log('reflect on EmployeeView =>');
-    console.log(op.reflect(EmployeeView, true));
-    console.log('generate interface =>');
-    console.log(op.generateInterface(Employee));
-    console.log(op.generateInterfaces(Examples, 'Examples'));
-    var ev = new EmployeeView();
-    ev.MiddleName = 'myMiddleName';
-    var ev1 = new EmployeeView();
-    var person1 = op.createNew(Employee, {
-        FirstName: 'Bruce',
-        MiddleName: 'B',
-        Surname: 'Anderson',
-        HomeAddress: op.createNew(Address, {
-            Street: '1600 Pennsylvania Ave',
-            ZipCode: '90210'
-        }),
-    });
-    console.log(person1);
-    person1.Surname = 'Bruce';
-    console.log(person1.Surname);
-    ev1.MiddleName = 'test';
-    var newEmployee = {
-        do: op.assign,
-        source: {
-            FirstName: 'George',
-            MiddleName: 'Carl',
-        },
-        target: EmployeeFactory.instance,
-    };
-    console.log(newEmployee.do().FirstName);
-    console.log(op.generateReflectionJSON(Employee, 'obj'));
+    Examples.EmployeeView = EmployeeView;
+    // hook global op
+    (function (__global) {
+        if (typeof __global.Examples !== "undefined") {
+            if (__global.Examples !== Examples) {
+                for (var p in Examples) {
+                    __global.Examples[p] = Examples[p];
+                }
+            }
+        }
+        else {
+            __global.Examples = Examples;
+        }
+    })(typeof window !== "undefined" ? window :
+        typeof WorkerGlobalScope !== "undefined" ? self :
+            typeof global !== "undefined" ? global :
+                Function("return this;")());
 })(Examples || (Examples = {}));
 //# sourceMappingURL=Employee.js.map
