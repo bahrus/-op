@@ -1,4 +1,8 @@
 ///<reference path='Scripts/typings/node/node.d.ts'/>
-require('./@op.js');
-console.log('Hello world 2');
+///<reference path='reflect-metadata.d.ts'/>
+if (typeof (global) !== 'undefined') {
+    require('./Refs');
+}
+console.log('Hello world 3');
+console.log(Reflect.defineMetadata);
 //# sourceMappingURL=app.js.map
