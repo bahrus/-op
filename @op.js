@@ -1,5 +1,8 @@
 ///<reference path='reflect-metadata.d.ts'/>
 ///<reference path='Scripts/typings/node/node.d.ts'/>
+if (typeof (global) !== 'undefined') {
+    require('./Reflect');
+}
 if (!Object['assign']) {
     //from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     Object.defineProperty(Object, 'assign', {
