@@ -3,7 +3,7 @@ if (typeof (global) !== 'undefined') {
     require('./@op');
 }
 
-module op {
+module JsonReflector {
     
     declare var WorkerGlobalScope : any;
     
@@ -35,15 +35,15 @@ module op {
     
     // hook global op
     (function(__global: any) {
-        if (typeof __global.op !== "undefined") {
-            if (__global.op !== op) {
-                for (var p in op) {
-                    __global.op[p] = (<any>op)[p];
+        if (typeof __global.JsonReflector !== "undefined") {
+            if (__global.JsonReflector !== JsonReflector) {
+                for (var p in JsonReflector) {
+                    __global.JsonReflector[p] = (<any>JsonReflector)[p];
                 }
             }
         }
         else {
-            __global.op = op;
+            __global.JsonReflector = JsonReflector;
         }
     })(
         typeof window !== "undefined" ? window :

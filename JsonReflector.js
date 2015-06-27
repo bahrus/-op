@@ -2,8 +2,8 @@
 if (typeof (global) !== 'undefined') {
     require('./@op');
 }
-var op;
-(function (op) {
+var JsonReflector;
+(function (JsonReflector) {
     function generateReflectionJSON(classRef, rootName) {
         var reflectedClass = op.reflect(classRef, true);
         var reflectionObj = {};
@@ -19,22 +19,22 @@ var op;
         }
         return JSON.stringify(reflectionObj);
     }
-    op.generateReflectionJSON = generateReflectionJSON;
+    JsonReflector.generateReflectionJSON = generateReflectionJSON;
     // hook global op
     (function (__global) {
-        if (typeof __global.op !== "undefined") {
-            if (__global.op !== op) {
-                for (var p in op) {
-                    __global.op[p] = op[p];
+        if (typeof __global.JsonReflector !== "undefined") {
+            if (__global.JsonReflector !== JsonReflector) {
+                for (var p in JsonReflector) {
+                    __global.JsonReflector[p] = JsonReflector[p];
                 }
             }
         }
         else {
-            __global.op = op;
+            __global.JsonReflector = JsonReflector;
         }
     })(typeof window !== "undefined" ? window :
         typeof WorkerGlobalScope !== "undefined" ? self :
             typeof global !== "undefined" ? global :
                 Function("return this;")());
-})(op || (op = {}));
-//# sourceMappingURL=@op.JsonReflector.js.map
+})(JsonReflector || (JsonReflector = {}));
+//# sourceMappingURL=JsonReflector.js.map

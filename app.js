@@ -1,11 +1,11 @@
 ///<reference path='reflect-metadata.d.ts'/>
 ///<reference path='@op.ts'/>
-///<reference path='@op.JsonReflector.ts'/>
+///<reference path='JsonReflector.ts'/>
 ///<reference path='InterfaceGenerator.ts'/>
 ///<reference path='Employee.ts'/>
 if (typeof (global) !== 'undefined') {
     require('./InterfaceGenerator');
-    require('./@op.JsonReflector');
+    require('./JsonReflector');
     require('./Employee');
 }
 console.log('Hello world 3');
@@ -40,5 +40,5 @@ var newEmployee = {
     target: Examples.EmployeeFactory.instance,
 };
 console.log(newEmployee.do().FirstName);
-console.log(op.generateReflectionJSON(Examples.Employee, 'obj'));
+console.log(JsonReflector.generateReflectionJSON(Examples.Employee, 'obj'));
 //# sourceMappingURL=app.js.map
